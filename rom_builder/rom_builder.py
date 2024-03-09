@@ -167,13 +167,13 @@ with open("lk_multimenu.gba", "rb") as f:
 	menu_rom[build_timestamp_offset:build_timestamp_offset+len(build_timestamp)] = build_timestamp
 
 # Change background image
-if args.bg or os.path.exists("bg.png"):
+if args.bg or os.path.exists("../bg.png"):
 	try:
 		from PIL import Image
 		if args.bg:
 			img = Image.open(args.bg)
 		else:
-			img = Image.open("bg.png")
+			img = Image.open("../bg.png")
 		img = img.convert('P')
 		palette = img.getpalette()
 		palette_rgb555 = [((b >> 3) << 10) | ((g >> 3) << 5) | (r >> 3) for r, g, b in zip(palette[::3], palette[1::3], palette[2::3])]
