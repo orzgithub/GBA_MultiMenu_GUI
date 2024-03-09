@@ -220,8 +220,10 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         if selected_file_path:
             image = Image.open(selected_file_path)
             if image.size == (240, 160):
-                bg_path: str = selected_file_path
-                image_lk_bg: PhotoImage = ImageTk.PhotoImage(file=selected_file_path)
+                global bg_path
+                global image_lk_bg
+                bg_path = selected_file_path
+                image_lk_bg = ImageTk.PhotoImage(file=selected_file_path)
             else:
                 tkinter.messagebox.showerror(
                     message=app_lang.error_image_size_not_allowed
@@ -258,6 +260,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         argoptions["split"] = check_cartridge_split_stat.get()
         if bg_path != "":
             argoptions["bg"] = bg_path
+        print(argoptions)
         MenuBuilder.build_start(options, argoptions, game_list)
 
     button_lk_build = tkinter.ttk.Button(
