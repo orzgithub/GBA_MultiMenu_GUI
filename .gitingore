@@ -1,0 +1,6 @@
+.venv
+.github
+.git
+.idea
+patched_game/*
+
