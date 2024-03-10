@@ -9,6 +9,34 @@ This application can patch the game with SRAM patch and batteryless patch automa
 now. Just select the original ROM (Patched ROMs are ok. In most cases it won't be patched again.) in the GUI and
 everything would be done.
 
+## How to build
+
+As this program is using C extensions you need to build these extensions to make it work.
+
+You need to have gcc or clang, cmake, devkitarm for gba, pybind11, python and boost installed.
+
+On linux or some simular *nix platforms you can execute the following commands:
+
+```shell
+export DEVKITPRO=<PATH_TO_DEVKITPRO>
+export DEVKITARM=<PATH_TO_DEVKITARM>
+cd batteryless_patch
+cmake .
+make payload
+make
+cp batteryless_patch$(python3-config --extension-suffix) ../lib
+cd ..
+cd gba_patch
+cmake .
+make
+cp gba_patch$(python3-config --extension-suffix) ../lib
+cd ..
+```
+
+If everything goes right it should work. Just run LKMenuGUI.py like other python applications(Of course you need to install dependencies first and it's recommend to setup a venv.)
+
+Or you can build it with Nuitka, just like the release version.
+
 ## Thanks
 
 [GBA Multi Game Menu](https://github.com/lesserkuma/GBA_MultiMenu) By lesserkuma

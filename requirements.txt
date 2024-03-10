@@ -1,5 +1,7 @@
 pillow ~= 10.2.0
 pybind11 ~= 2.11.1
-Nuitka ~= 2.1
+
+# Nuitka ~= 2.1
+# For building purpose.
 
 # And you need boost to build C extensions.
