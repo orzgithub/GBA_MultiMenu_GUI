@@ -2,7 +2,7 @@ import json
 import os
 
 import Patcher
-import lk_multimenu.rom_builder as rom_builder
+import rom_builder.rom_builder as rom_builder
 
 
 def build_start(options: dict, argoptions: dict, gamelist: list):
