@@ -4,6 +4,7 @@ import tkinter.filedialog
 import tkinter.ttk
 from PIL import ImageTk, Image
 import ctypes
+import base64
 
 from PIL.ImageTk import PhotoImage
 
@@ -11,6 +12,7 @@ import I18n
 import platform
 from Config import Config
 import MenuBuilder
+import Resource
 
 # These code are really poor quality.
 # Maybe it would be rebuilt one day.
@@ -22,6 +24,10 @@ if __name__ == "__main__":
     app_lang: I18n.lang_base = eval(f"I18n.{config.lang}")
 
     app = tkinter.Tk()
+
+    app_icon = base64.b64decode(Resource.icon)
+    app_icon = ImageTk.PhotoImage(data=app_icon)
+    app.iconphoto(False, app_icon)
 
     if platform.system() == "Windows":  # Using hidpi on Windows
         try:
