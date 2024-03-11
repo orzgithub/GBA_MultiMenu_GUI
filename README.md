@@ -22,7 +22,8 @@ export DEVKITPRO=<PATH_TO_DEVKITPRO>
 export DEVKITARM=<PATH_TO_DEVKITARM>
 cd batteryless_patch
 cmake .
-make payload
+# make payload
+# The source code has a pre-built payload_bin.hpp so no need to build it again. Uncommitt it if you wish to build it on your own.
 make
 cp batteryless_patch$(python3-config --extension-suffix) ../lib
 cd ..

@@ -9,5 +9,5 @@ CC=clang++
 
 $DEVKITARM/bin/arm-none-eabi-gcc -mcpu=arm7tdmi -nostartfiles -nodefaultlibs -mthumb -fPIE -Os -fno-toplevel-reorder src_payload/payload.c -T src_payload/payload.ld -o payload.elf
 $DEVKITARM/bin/arm-none-eabi-objcopy -O binary payload.elf payload.bin
-xxd -i payload.bin > src/payload_bin.cpp
+xxd -i payload.bin > src/payload_bin.hpp
 $CC -O3 -Wall -shared -std=c++11 -fPIC $(python3 -m pybind11 --includes) src/*.cpp -o ../lib/batteryless_patch$(python3-config --extension-suffix)

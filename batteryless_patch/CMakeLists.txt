@@ -21,7 +21,7 @@ add_custom_target(
 	payload
 	COMMAND $ENV{DEVKITARM}/bin/arm-none-eabi-gcc -mcpu=arm7tdmi -nostartfiles -nodefaultlibs -mthumb -fPIE -Os -fno-toplevel-reorder ${PROJECT_SOURCE_DIR}/src_payload/payload.c -T ${PROJECT_SOURCE_DIR}/src_payload/payload.ld -o payload.elf
 	COMMAND $ENV{DEVKITARM}/bin/arm-none-eabi-objcopy -O binary ${PROJECT_SOURCE_DIR}/payload.elf payload.bin
-	COMMAND xxd -i payload.bin > ${PROJECT_SOURCE_DIR}/src/payload_bin.cpp
+	COMMAND xxd -i payload.bin > ${PROJECT_SOURCE_DIR}/src/payload_bin.hpp
 )
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.h)

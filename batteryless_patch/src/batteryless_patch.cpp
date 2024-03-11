@@ -6,7 +6,7 @@
 
 #include <pybind11/pybind11.h>
 
-#include "payload_bin.h"
+#include "payload_bin.hpp"
 
 #ifdef _MSC_VER
 #define strcasecmp _stricmp
