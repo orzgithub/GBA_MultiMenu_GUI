@@ -35,6 +35,8 @@ cd ..
 
 You can also build it on windows but it's impossible to built with msvc without some works on batteryless patcher. So use msys2 toolchains instead.
 
+This application also works for pypy and may other implements of python. But by default cmake would build it with cpython so you may need to make some changes on CMakeLists.txt.
+
 If everything goes right it should work. Just run LKMenuGUI.py like other python applications (Of course you need to install dependencies first and it's recommend to setup a venv.).
 
 Or you can build it with Nuitka or pack it with pyinstaller. Additional files like bg.png, lk_multimenu.gba won't be packed together with the final executable file so copy them together manually. Due to some limitations on nuitka, config.json should also be placed with executable before starting it, while it would be generated with default config automatically if you run it directly or packed by pyinstaller.
