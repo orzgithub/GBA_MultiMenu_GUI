@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 
 import Patcher
 import rom_builder.rom_builder as rom_builder
@@ -10,9 +11,12 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
     for game in gamelist:
         file_name = os.path.basename(game["path"])
         out_file = "./game_patched/" + file_name
-        Patcher.sram_patcher(game["path"], out_file)
-        if not options["battery_present"]:
-            Patcher.batteryless_patcher(out_file, out_file)
+        if game["save_slot"] is None:
+            shutil.copy(game["path"], out_file)
+        else:
+            Patcher.sram_patcher(game["path"], out_file)
+            if not options["battery_present"]:
+                Patcher.batteryless_patcher(out_file, out_file)
         game_json_elem = {
             "enabled": True,  # Who would add a game in the GUI but disable it?
             "file": file_name,
