@@ -23,7 +23,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         game_json_elem = {
             "enabled": True,  # Who would add a game in the GUI but disable it?
             "file": file_name,
-            "title": game["name"],
+            "title": str(game["name"]),
             "title_font": 1,
             "save_slot": game["save_slot"],
         }
