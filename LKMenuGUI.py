@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
         def select_menu_bg():
             selected_file_path = tkinter.filedialog.askopenfilename(
-                filetypes=[(app_lang.text_filetype_gba, ".gba")]
+                parent=window_add_rom, filetypes=[(app_lang.text_filetype_gba, ".gba")]
             )
             if selected_file_path:
                 entry_gba_path.delete(0, tkinter.END)
@@ -89,8 +89,6 @@ if __name__ == "__main__":
             frame_add_rom, text=app_lang.button_done, command=finish_add_rom
         )
         button_done.grid(row=3, column=1)
-
-        window_add_rom.focus_force()
         window_add_rom.mainloop()
 
     # Menu part
@@ -215,7 +213,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
 
     def select_menu_bg():
         selected_file_path = tkinter.filedialog.askopenfilename(
-            filetypes=[(app_lang.text_filetype_png, ".png")]
+            parent=app, filetypes=[(app_lang.text_filetype_png, ".png")]
         )
         if selected_file_path:
             image = Image.open(selected_file_path)
