@@ -8,6 +8,9 @@ import rom_builder.rom_builder as rom_builder
 
 def build_start(options: dict, argoptions: dict, gamelist: list):
     game_json_file = list()
+    if os.path.exists("./game_patched"):
+        os.rmdir("./game_patched")
+    os.makedirs("./game_patched")
     for game in gamelist:
         file_name = os.path.basename(game["path"])
         out_file = "./game_patched/" + file_name

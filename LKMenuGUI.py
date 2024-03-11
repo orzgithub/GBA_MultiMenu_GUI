@@ -260,7 +260,6 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         argoptions["split"] = check_cartridge_split_stat.get()
         if bg_path != "":
             argoptions["bg"] = bg_path
-        print(argoptions)
         MenuBuilder.build_start(options, argoptions, game_list)
 
     button_lk_build = tkinter.ttk.Button(
