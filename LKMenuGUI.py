@@ -300,8 +300,13 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         argoptions["split"] = check_cartridge_split_stat.get()
         if bg_path != "":
             argoptions["bg"] = bg_path
-        MenuBuilder.build_start(options, argoptions, game_list)
-        tkinter.messagebox.showinfo(app_lang.info_build_done)
+        path_save = tkinter.filedialog.asksaveasfilename(
+            parent=app, filetypes=[(app_lang.text_filetype_gba, ".gba")]
+        )
+        if path_save:
+            argoptions["output"] = path_save
+            MenuBuilder.build_start(options, argoptions, game_list)
+            tkinter.messagebox.showinfo(app_lang.info_build_done)
 
     button_lk_build = tkinter.ttk.Button(
         frame_rom_gen, text=app_lang.button_lk_build, command=start_build

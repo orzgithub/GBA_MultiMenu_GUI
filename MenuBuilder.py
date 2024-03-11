@@ -42,4 +42,8 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         build_config["bg"] = argoptions["bg"]
     if "split" in argoptions.keys():
         build_config["split"] = argoptions["split"]
+    if "bg" in argoptions.keys():
+        build_config["bg"] = argoptions["bg"]
+    if "output" in argoptions.keys():
+        build_config["output"] = argoptions["output"]
     rom_builder.build(build_config)
