@@ -306,7 +306,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         if path_save:
             argoptions["output"] = path_save
             MenuBuilder.build_start(options, argoptions, game_list)
-            tkinter.messagebox.showinfo(text=app_lang.info_build_done)
+            tkinter.messagebox.showinfo(message=app_lang.info_build_done)
 
     button_lk_build = tkinter.ttk.Button(
         frame_rom_gen, text=app_lang.button_lk_build, command=start_build
