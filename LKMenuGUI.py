@@ -2,6 +2,9 @@ import tkinter
 import tkinter.messagebox
 import tkinter.filedialog
 import tkinter.ttk
+import tkinter.font
+import webbrowser
+
 from PIL import ImageTk, Image
 import ctypes
 import base64
@@ -115,6 +118,38 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
 """
         )
     menu.add_cascade(label=app_lang.menu_lang_set, menu=menu_lang)
+
+    ##About
+    def show_window_about():
+        window_about = tkinter.Toplevel(app)
+        frame_about = tkinter.ttk.Frame(window_about)
+        frame_about.pack(padx=10, pady=10)
+        lable_icon = tkinter.ttk.Label(frame_about, image=app_icon)
+        lable_icon.pack(padx=5, pady=5)
+        lable_about_title = tkinter.ttk.Label(
+            frame_about,
+            text=app_lang.text_about_title,
+            font=tkinter.font.Font(weight="bold"),
+        )
+        lable_about_title.pack(padx=5, pady=5)
+        lable_about_ver = tkinter.ttk.Label(
+            frame_about, text=app_lang.text_about_version
+        )
+        lable_about_ver.pack(padx=5, pady=5)
+        lable_about_url = tkinter.Label(
+            frame_about, text=app_lang.text_about_url, fg="blue"
+        )
+        global image_transflag
+        image_transflag = base64.b64decode(Resource.transflag)
+        image_transflag = ImageTk.PhotoImage(data=image_transflag)
+        label_transgender_flag = tkinter.ttk.Label(frame_about, image=image_transflag)
+        label_transgender_flag.pack(padx=5, pady=5)
+        lable_about_url.bind(
+            "<Button-1>", lambda event: webbrowser.open(app_lang.text_about_url, new=0)
+        )
+        lable_about_url.pack(padx=5, pady=5)
+
+    menu.add_command(label=app_lang.menu_about, command=show_window_about)
     ## Exit
     menu.add_command(label=app_lang.menu_exit, command=app.quit)
     app.config(menu=menu)
@@ -228,6 +263,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 global image_lk_bg
                 bg_path = selected_file_path
                 image_lk_bg = ImageTk.PhotoImage(file=selected_file_path)
+                label_image_lk_bg["image"] = image_lk_bg
             else:
                 tkinter.messagebox.showerror(
                     message=app_lang.error_image_size_not_allowed
@@ -265,6 +301,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         if bg_path != "":
             argoptions["bg"] = bg_path
         MenuBuilder.build_start(options, argoptions, game_list)
+        tkinter.messagebox.showinfo(app_lang.info_build_done)
 
     button_lk_build = tkinter.ttk.Button(
         frame_rom_gen, text=app_lang.button_lk_build, command=start_build

@@ -13,6 +13,7 @@ class lang_base(ABC):
     menu_add_game: str
     menu_lang_set: str
     menu_exit: str
+    menu_about: str
     text_lk_bg: str
     text_gba_path: str
     text_gba_name: str
@@ -30,6 +31,9 @@ class lang_base(ABC):
         "F0095H0",
     ]
     text_cart_min_size_list: dict[str, int] = {"4 MB": 4194304, "512 KB": 524288}
+    text_about_title: str
+    text_about_url: str = "https://github.com/orzgithub/GBA_MultiMenu_GUI"
+    text_about_version: str = "Pre-Release"
     table_rom_headings: dict[str, str] = {"name": "", "path": "", "save_slot": ""}
     frame_rom_mgr: str
     frame_rom_gen: str
@@ -39,6 +43,7 @@ class lang_base(ABC):
     button_add_rom: str
     button_delete: str
     info_change_lang: str
+    info_build_done: str
     error_image_size_not_allowed: str
 
 
@@ -48,6 +53,7 @@ class zh_CN(lang_base):
     menu_add_game: str = "添加"
     menu_lang_set: str = "语言"
     menu_exit: str = "退出"
+    menu_about: str = "关于"
     text_lk_bg: str = "菜单背景"
     text_gba_path: str = "ROM路径"
     text_gba_name: str = "游戏名称"
@@ -58,6 +64,7 @@ class zh_CN(lang_base):
     text_cart_battery_type: str = "是否有电池"
     text_cart_split: str = "分割ROM"
     text_cart_min_size: str = "卡带最小ROM大小"
+    text_about_title: str = "LK合卡菜单生成"
     table_rom_headings: dict[str, str] = {
         "name": "名称",
         "path": "路径",
@@ -71,6 +78,7 @@ class zh_CN(lang_base):
     button_add_rom: str = "选择ROM"
     button_delete: str = "删除"
     info_change_lang: str = "语言已改变，重启应用生效。"
+    info_build_done: str = "生成完成"
     error_image_size_not_allowed: str = "图片尺寸不符，无法作为菜单背景。 \n" "请选择一个240*160的png图片。"
 
 
@@ -79,6 +87,7 @@ class en_US(lang_base):
     window_title_add_rom: str = "Add a ROM"
     menu_add_game: str = "Add"
     menu_lang_set: str = "Language"
+    menu_about: str = "About"
     menu_exit: str = "Exit"
     text_lk_bg: str = "Menu Background"
     text_gba_path: str = "ROM Path"
@@ -90,6 +99,7 @@ class en_US(lang_base):
     text_cart_battery_type: str = "Have Battery"
     text_cart_split: str = "Split ROM"
     text_cart_min_size: str = "Minimial ROM size"
+    text_about_title: str = "LK Muiltmenu builder"
     table_rom_headings: dict[str, str] = {
         "name": "Name",
         "path": "Path",
@@ -105,6 +115,7 @@ class en_US(lang_base):
     info_change_lang: str = (
         "Language is changed. Restart the application to take effect."
     )
+    info_build_done: str = "Generate finished"
     error_image_size_not_allowed: str = (
         "Size of the image is wrong. \n" "Please use a 240*160 pixel image."
     )
