@@ -9,7 +9,6 @@ typedef struct Options_struct {
 	std::string ips = "";
 	bool patch_sram = true;
 	bool uniformize = false;
-	bool patch_ez4 = true;
 	bool patch_complement = true;
 	bool trim = false;
 	bool in_place = false;

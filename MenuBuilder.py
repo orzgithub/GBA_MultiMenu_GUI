@@ -2,11 +2,18 @@ import json
 import os
 import shutil
 
-import Patcher
-import rom_builder.rom_builder as rom_builder
+from Utils import Patcher
+from Utils import HeaderReader
+from rom_builder import rom_builder
 
 
 def build_start(options: dict, argoptions: dict, gamelist: list):
+    if os.path.isdir("sram_ips"):
+        ips_game_list = os.listdir("sram_ips")
+        for i in range(0, len(ips_game_list)):
+            ips_game_list[i] = os.path.splitext(ips_game_list[i])[0]
+    else:
+        ips_game_list = list()
     game_json_file = list()
     if os.path.exists("./game_patched"):
         shutil.rmtree("./game_patched")
@@ -14,12 +21,17 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
     for game in gamelist:
         file_name = os.path.basename(game["path"])
         out_file = "./game_patched/" + file_name
-        if game["save_slot"] is None:
-            shutil.copy(game["path"], out_file)
+        if HeaderReader.get_id(game["path"]) in ips_game_list:
+            Patcher.ips_patcher(
+                game["path"],
+                "sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
+                out_file,
+            )
+            print("Using ips patch!")
         else:
             Patcher.sram_patcher(game["path"], out_file)
-            if not options["battery_present"]:
-                Patcher.batteryless_patcher(out_file, out_file)
+        if not options["battery_present"] and game["save_slot"] is not None:
+            Patcher.batteryless_patcher(out_file, out_file)
         game_json_elem = {
             "enabled": True,  # Who would add a game in the GUI but disable it?
             "file": file_name,

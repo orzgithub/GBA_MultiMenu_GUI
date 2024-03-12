@@ -65,10 +65,10 @@ bool process_rom(const std::string & input_file, const std::string & output_file
 				std::cout << "Patching save type to SRAM." << std::endl;
 				patch_sram(rom_data);
 			} catch (MalformedDataException &e) {
-				std::cerr << "Error during IPS patching: " << e.error() << std::endl;
+				std::cerr << "Error during SRAM patching: " << e.error() << std::endl;
 				success = false;
 			} catch (PatternNotFoundException &e) {
-				std::cerr << "Error during IPS patching: " << e.error() << std::endl;
+				std::cerr << "Error during SRAM patching: " << e.error() << std::endl;
 				success = false;
 			}
 		}
