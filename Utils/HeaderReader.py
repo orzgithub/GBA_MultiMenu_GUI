@@ -16,8 +16,3 @@ def get_version(rom_path: str) -> bytes:
         rom.seek(0x00BC)
         version = rom.read()
     return version
-
-
-mrom_path = "/home/workstation/下载/jagoombacolor_v0.5.gba"
-print(get_id(mrom_path))
-print(get_name(mrom_path))
