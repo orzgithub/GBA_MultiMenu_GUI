@@ -59,7 +59,12 @@ if __name__ == "__main__":
 
         def select_menu_bg():
             selected_file_path = tkinter.filedialog.askopenfilename(
-                parent=window_add_rom, filetypes=[(app_lang.text_filetype_gba, ".gba")]
+                parent=window_add_rom,
+                filetypes=[
+                    (app_lang.text_filetype_gba, ".gba"),
+                    (app_lang.text_filetype_gbc, ".gbc"),
+                    (app_lang.text_filetype_gb, ".gb"),
+                ],
             )
             if selected_file_path:
                 entry_gba_path.delete(0, tkinter.END)

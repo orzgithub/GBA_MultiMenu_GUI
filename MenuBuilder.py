@@ -2,8 +2,9 @@ import json
 import os
 import shutil
 
-from Utils import Patcher
-from Utils import HeaderReader
+from utils import Patcher
+from utils import HeaderReader
+from utils import EmulatorBuilder
 from rom_builder import rom_builder
 
 
@@ -19,26 +20,45 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         shutil.rmtree("./game_patched")
     os.makedirs("./game_patched")
     for game in gamelist:
-        file_name = os.path.basename(game["path"])
-        out_file = "./game_patched/" + file_name
-        if HeaderReader.get_id(game["path"]) in ips_game_list:
-            Patcher.ips_patcher(
-                game["path"],
-                "sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
-                out_file,
-            )
-            print("Using ips patch!")
-        else:
-            Patcher.sram_patcher(game["path"], out_file)
-        if not options["battery_present"] and game["save_slot"] is not None:
-            Patcher.batteryless_patcher(out_file, out_file)
-        game_json_elem = {
-            "enabled": True,  # Who would add a game in the GUI but disable it?
-            "file": file_name,
-            "title": str(game["name"]),
-            "title_font": 1,
-            "save_slot": game["save_slot"],
-        }
+        file_name_full = os.path.basename(game["path"])
+        file_name = os.path.splitext(file_name_full)[0]
+        file_type = os.path.splitext(file_name_full)[1]
+        print(file_name)
+        print(file_type)
+        game_json_elem = dict()
+        match file_type:
+            case ".gba":
+                out_file = "./game_patched/" + file_name_full
+                if HeaderReader.get_id(game["path"]) in ips_game_list:
+                    Patcher.ips_patcher(
+                        game["path"],
+                        "sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
+                        out_file,
+                    )
+                else:
+                    Patcher.sram_patcher(game["path"], out_file)
+                if not options["battery_present"] and game["save_slot"] is not None:
+                    Patcher.batteryless_patcher(out_file, out_file)
+                game_json_elem = {
+                    "enabled": True,  # Who would add a game in the GUI but disable it?
+                    "file": file_name_full,
+                    "title": str(game["name"]),
+                    "title_font": 1,
+                    "save_slot": game["save_slot"],
+                }
+            case ".gb" | ".gbc":
+                out_file = "./game_patched/" + file_name + ".gba"
+                EmulatorBuilder.build_goomba(game["path"], out_file)
+                game_json_elem = {
+                    "enabled": True,  # Who would add a game in the GUI but disable it?
+                    "file": file_name + ".gba",
+                    "title": str(game["name"]),
+                    "title_font": 1,
+                    "save_slot": game["save_slot"],
+                }
+            case _:
+                print(game)
+                print("Not acceptable")
         game_json_file.append(game_json_elem)
     fin_json = {"cartridge": options, "games": game_json_file}
     json_file = open("builder.json", "w")

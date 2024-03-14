@@ -20,6 +20,8 @@ class lang_base(ABC):
     text_save_slot: str
     text_filetype_png: str
     text_filetype_gba: str
+    text_filetype_gbc: str
+    text_filetype_gb: str
     text_cart_type: str
     text_cart_battery_type: str
     text_cart_split: str
@@ -60,6 +62,8 @@ class zh_CN(lang_base):
     text_save_slot: str = "存档槽位"
     text_filetype_png: str = "PNG文件"
     text_filetype_gba: str = "GBA文件"
+    text_filetype_gbc: str = "GBC文件"
+    text_filetype_gb: str = "GB文件"
     text_cart_type: str = "卡带类型"
     text_cart_battery_type: str = "是否有电池"
     text_cart_split: str = "分割ROM"
@@ -94,7 +98,9 @@ class en_US(lang_base):
     text_gba_name: str = "Game Name"
     text_save_slot: str = "Save Slot"
     text_filetype_png: str = "PNG files"
-    text_filetype_gba: str = "GBA files"
+    text_filetype_gba: str = "GBA ROM files"
+    text_filetype_gbc: str = "GBC ROM files"
+    text_filetype_gb: str = "GB ROM files"
     text_cart_type: str = "Cartridge Type"
     text_cart_battery_type: str = "Have Battery"
     text_cart_split: str = "Split ROM"
