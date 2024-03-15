@@ -1,3 +1,4 @@
+import os.path
 import tkinter
 import tkinter.messagebox
 import tkinter.filedialog
@@ -14,6 +15,7 @@ from PIL.ImageTk import PhotoImage
 import I18n
 import platform
 from Config import Config
+from utils import HeaderReader
 import MenuBuilder
 import Resource
 
@@ -69,6 +71,11 @@ if __name__ == "__main__":
             if selected_file_path:
                 entry_gba_path.delete(0, tkinter.END)
                 entry_gba_path.insert(0, selected_file_path)
+                if (
+                    not entry_gba_name.get()
+                    and os.path.splitext(selected_file_path)[1] == ".gba"
+                ):
+                    entry_gba_name.insert(0, HeaderReader.get_name(selected_file_path))
 
         button_gba_path = tkinter.ttk.Button(
             frame_add_rom, text=app_lang.button_add_rom, command=select_menu_bg

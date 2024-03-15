@@ -23,8 +23,6 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         file_name_full = os.path.basename(game["path"])
         file_name = os.path.splitext(file_name_full)[0]
         file_type = os.path.splitext(file_name_full)[1]
-        print(file_name)
-        print(file_type)
         game_json_elem = dict()
         match file_type:
             case ".gba":
