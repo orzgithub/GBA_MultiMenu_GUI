@@ -9,16 +9,16 @@ from rom_builder import rom_builder
 
 
 def build_start(options: dict, argoptions: dict, gamelist: list):
-    if os.path.isdir("sram_ips"):
-        ips_game_list = os.listdir("sram_ips")
+    if os.path.isdir("../sram_ips"):
+        ips_game_list = os.listdir("../sram_ips")
         for i in range(0, len(ips_game_list)):
             ips_game_list[i] = os.path.splitext(ips_game_list[i])[0]
     else:
         ips_game_list = list()
     game_json_file = list()
-    if os.path.exists("./game_patched"):
-        shutil.rmtree("./game_patched")
-    os.makedirs("./game_patched")
+    if os.path.exists("../game_patched"):
+        shutil.rmtree("../game_patched")
+    os.makedirs("../game_patched")
     for game in gamelist:
         file_name_full = os.path.basename(game["path"])
         file_name = os.path.splitext(file_name_full)[0]
@@ -59,7 +59,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                 print("Not acceptable")
         game_json_file.append(game_json_elem)
     fin_json = {"cartridge": options, "games": game_json_file}
-    json_file = open("builder.json", "w")
+    json_file = open("../builder.json", "w")
     json_file.write(json.dumps(fin_json))
     json_file.close()
 

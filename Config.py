@@ -1,7 +1,7 @@
 import json
 import os
 import warnings
-from I18n import lang_dict
+from resources_src.I18n import lang_dict
 
 
 class Config(object):

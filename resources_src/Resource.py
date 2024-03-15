@@ -5,7 +5,7 @@ if __name__ == "__main__":
     new_res = ""
     import base64
 
-    with open("icon.ico", "rb") as icon:
+    with open("../icon.ico", "rb") as icon:
         re_icon = base64.b64encode(icon.read())
         new_res += "icon = " + str(re_icon) + "\n"
 
