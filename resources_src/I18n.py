@@ -12,8 +12,19 @@ class lang_base(ABC):
     window_title_add_rom: str
     menu_add_game: str
     menu_lang_set: str
-    menu_exit: str
     menu_about: str
+    menu_theme: str
+    menu_theme_type_dict: dict[str, str] = {
+        "system": "",
+        "sun_valley": "",
+    }
+    menu_theme_dict: dict[str, str] = {
+        "classic": "",
+        "auto": "",
+        "light": "",
+        "dark": "",
+    }
+    menu_exit: str
     text_lk_bg: str
     text_gba_path: str
     text_gba_name: str
@@ -54,8 +65,19 @@ class zh_CN(lang_base):
     window_title_add_rom: str = "添加ROM"
     menu_add_game: str = "添加"
     menu_lang_set: str = "语言"
-    menu_exit: str = "退出"
     menu_about: str = "关于"
+    menu_theme: str = "主题"
+    menu_theme_type_dict: dict[str, str] = {
+        "system": "系统样式",
+        "sun_valley": "Windows11样式",
+    }
+    menu_theme_dict: dict[str, str] = {
+        "classic": "经典",
+        "auto": "自动",
+        "light": "亮色",
+        "dark": "暗色",
+    }
+    menu_exit: str = "退出"
     text_lk_bg: str = "菜单背景"
     text_gba_path: str = "ROM路径"
     text_gba_name: str = "游戏名称"
@@ -92,6 +114,17 @@ class en_US(lang_base):
     menu_add_game: str = "Add"
     menu_lang_set: str = "Language"
     menu_about: str = "About"
+    menu_theme: str = "Theme"
+    menu_theme_type_dict: dict[str, str] = {
+        "system": "System style",
+        "sun_valley": "Windows11 style",
+    }
+    menu_theme_dict: dict[str, str] = {
+        "classic": "Classic",
+        "auto": "Auto",
+        "light": "Light",
+        "dark": "Dark",
+    }
     menu_exit: str = "Exit"
     text_lk_bg: str = "Menu Background"
     text_gba_path: str = "ROM Path"

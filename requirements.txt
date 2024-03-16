@@ -1,5 +1,6 @@
 pillow ~= 10.2.0
 pybind11 ~= 2.11.1
+sv-ttk >=2.6.0
 
 # Nuitka ~= 2.1
 # For building purpose.

@@ -9,13 +9,11 @@ import webbrowser
 from PIL import ImageTk, Image
 import ctypes
 import base64
-
-from PIL.ImageTk import PhotoImage
-
 import platform
-from Config import Config
 from utils import HeaderReader, MenuBuilder
-from resources_src import Resource, I18n
+from resources_src import Resource, I18n, Config
+
+import sv_ttk
 
 # These code are really poor quality.
 # Maybe it would be rebuilt one day.
@@ -25,9 +23,59 @@ from resources_src import Resource, I18n
 class MenuBuilderGUI(tkinter.Tk):
     def __init__(self):
         super().__init__()
-        config = Config()
+        global config
+        config = Config.Config()
 
         app_lang: I18n.lang_base = eval(f"I18n.{config.lang}")
+
+        def set_theme(theme: str):
+            config.set_theme(theme)
+            match theme:
+                case "auto":
+                    dark_mode = False
+                    match platform.system():
+                        case "darwin":
+                            try:
+                                from subprocess import check_output
+
+                                dark_mode = check_output(
+                                    "defaults read -g AppleInterfaceStyle", shell=True
+                                )
+                            except:
+                                dark_mode = False
+                        case "Windows":
+                            try:
+                                registry_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+                                reg_key = ctypes.windll.advapi32.RegOpenKeyExW(
+                                    ctypes.c_uint(0x80000001),
+                                    registry_path,
+                                    0,
+                                    ctypes.c_uint(0x20019),
+                                    ctypes.pointer(ctypes.c_uint(0)),
+                                )
+                                value = ctypes.c_uint()
+                                ctypes.windll.advapi32.RegQueryValueExW(
+                                    reg_key,
+                                    "AppsUseLightTheme",
+                                    None,
+                                    None,
+                                    ctypes.byref(value),
+                                    None,
+                                )
+                                ctypes.windll.advapi32.RegCloseKey(reg_key)
+                                dark_mode = value.value == 0
+                            except:
+                                dark_mode = False
+                    if dark_mode:
+                        sv_ttk.set_theme("dark", self)
+                    else:
+                        sv_ttk.set_theme("light", self)
+                case "light":
+                    sv_ttk.set_theme("light", self)
+                case "dark":
+                    sv_ttk.set_theme("dark", self)
+
+        set_theme(config.theme)
 
         app_icon_data = base64.b64decode(Resource.icon)
         app_icon = ImageTk.PhotoImage(data=app_icon_data)
@@ -174,6 +222,33 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             lable_about_url.pack(padx=5, pady=5)
 
         menu.add_command(label=app_lang.menu_about, command=show_window_about)
+        ##Theme
+        menu_theme = tkinter.Menu(menu, tearoff=False)
+        menu_theme_system = tkinter.Menu(menu, tearoff=False)
+        menu_theme_system.add_command(
+            label=app_lang.menu_theme_dict["classic"],
+            command=lambda: set_theme("classic"),
+        )
+        menu_theme.add_cascade(
+            label=app_lang.menu_theme_type_dict["system"], menu=menu_theme_system
+        )
+        menu_theme_sv = tkinter.Menu(menu, tearoff=False)
+        menu_theme_sv.add_command(
+            label=app_lang.menu_theme_dict["auto"],
+            command=lambda: set_theme("auto"),
+        )
+        menu_theme_sv.add_command(
+            label=app_lang.menu_theme_dict["light"],
+            command=lambda: set_theme("light"),
+        )
+        menu_theme_sv.add_command(
+            label=app_lang.menu_theme_dict["dark"],
+            command=lambda: set_theme("dark"),
+        )
+        menu_theme.add_cascade(
+            label=app_lang.menu_theme_type_dict["sun_valley"], menu=menu_theme_sv
+        )
+        menu.add_cascade(label=app_lang.menu_theme, menu=menu_theme)
         ## Exit
         menu.add_command(label=app_lang.menu_exit, command=self.quit)
         self.config(menu=menu)
