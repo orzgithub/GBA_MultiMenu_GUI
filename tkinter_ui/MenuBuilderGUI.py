@@ -94,6 +94,9 @@ class MenuBuilderGUI(tkinter.Tk):
 
         gba_struct: dict = {"path": "", "name": "", "save_slot": 0}
 
+        global max_slot
+        max_slot = 1
+
         def show_window_add_rom():
             # Rom Add Window
             window_add_rom = tkinter.Toplevel(self)
@@ -145,7 +148,9 @@ class MenuBuilderGUI(tkinter.Tk):
             )
             lable_save_slot.grid(row=2, column=0, padx=5, pady=5)
             entry_save_slot = tkinter.ttk.Spinbox(
-                frame_add_rom, values=((None,) + tuple(range(1, 11))), increment=1
+                frame_add_rom,
+                values=((None,) + tuple(range(1, max_slot + 1))),
+                increment=1,
             )
             entry_save_slot.insert(0, "None")
             entry_save_slot.grid(row=2, column=1, padx=5, pady=5, sticky=tkinter.W)
@@ -160,6 +165,9 @@ class MenuBuilderGUI(tkinter.Tk):
                     else int(entry_save_slot.get())
                 )
                 add_game(gba_ret)
+                global max_slot
+                if gba_ret["save_slot"] == max_slot:
+                    max_slot += 1
                 window_add_rom.quit()
                 window_add_rom.destroy()
 
