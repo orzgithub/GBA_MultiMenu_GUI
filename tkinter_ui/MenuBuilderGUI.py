@@ -28,6 +28,8 @@ class MenuBuilderGUI(tkinter.Tk):
 
         app_lang: I18n.lang_base = eval(f"I18n.{config.lang}")
 
+        default_theme = tkinter.ttk.Style(master=self).theme_use()
+
         def set_theme(theme: str):
             config.set_theme(theme)
             match theme:
@@ -45,25 +47,13 @@ class MenuBuilderGUI(tkinter.Tk):
                                 dark_mode = False
                         case "Windows":
                             try:
-                                registry_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-                                reg_key = ctypes.windll.advapi32.RegOpenKeyExW(
-                                    ctypes.c_uint(0x80000001),
-                                    registry_path,
-                                    0,
-                                    ctypes.c_uint(0x20019),
-                                    ctypes.pointer(ctypes.c_uint(0)),
-                                )
-                                value = ctypes.c_uint()
-                                ctypes.windll.advapi32.RegQueryValueExW(
-                                    reg_key,
-                                    "AppsUseLightTheme",
-                                    None,
-                                    None,
-                                    ctypes.byref(value),
-                                    None,
-                                )
-                                ctypes.windll.advapi32.RegCloseKey(reg_key)
-                                dark_mode = value.value == 0
+                                import winreg
+
+                                registry_path = "Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+                                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, registry_path)
+                                value, reg_type = winreg.QueryValueEx(key, "AppsUseLightTheme")
+                                winreg.CloseKey(key)
+                                dark_mode = value == 0
                             except:
                                 dark_mode = False
                     if dark_mode:
@@ -74,6 +64,8 @@ class MenuBuilderGUI(tkinter.Tk):
                     sv_ttk.set_theme("light", self)
                 case "dark":
                     sv_ttk.set_theme("dark", self)
+                case "classic":
+                    tkinter.ttk.Style(master=self).theme_use(default_theme)
 
         set_theme(config.theme)
 
