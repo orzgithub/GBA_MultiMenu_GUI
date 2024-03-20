@@ -1,0 +1,125 @@
+.left-top {
+    align: left top;
+}
+
+.center-top {
+    align: center top;
+}
+
+.right-top {
+    align: right top;
+}
+
+.left-middle {
+    align: left middle;
+}
+
+.center-middle {
+    align: center middle;
+}
+
+.right-middle {
+    align: right middle;
+}
+
+.left-bottom {
+    align: left bottom;
+}
+
+.center-bottom {
+    align: center bottom;
+}
+
+.center-bottom {
+    align: center bottom;
+}
+
+.right-bottom {
+    align: right bottom;
+}
+
+.content-left-top {
+    content-align: left top;
+}
+
+.content-center-top {
+    content-align: center top;
+}
+
+.content-right-top {
+    content-align: right top;
+}
+
+.content-left-middle {
+    content-align: left middle;
+}
+
+.content-center-middle {
+    content-align: center middle;
+}
+
+.content-right-middle {
+    content-align: right middle;
+}
+
+.content-left-bottom {
+    content-align: left bottom;
+}
+
+.content-center-bottom {
+    content-align: center bottom;
+}
+
+.content-right-bottom {
+    content-align: right bottom;
+}
+
+.border-titled {
+    border: solid $primary;
+    border-title-align: left;
+}
+
+.auto-size {
+    width: auto;
+    height: auto;
+}
+
+.pink {
+    background: pink;
+}
+
+.powderblue {
+    background: powderblue;
+}
+
+.white {
+    background: white;
+}
+
+.bold-text {
+    text-style: bold;
+}
+
+#container-games {
+    layout: vertical;
+    height: 100%;
+    width: 50%;
+}
+
+#container-menu {
+    layout: grid;
+    grid-size: 2;
+    grid-columns: auto 1fr;
+    height: 100%;
+    width: 50%;
+}
+
+#main-screen {
+    layout: horizontal;
+}
+
+#game-add-screen {
+    layout: grid;
+    grid-size: 2;
+    grid-columns: auto 1fr;
+}

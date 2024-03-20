@@ -8,6 +8,10 @@ lang_dict = {"en_US": "English(US)", "zh_CN": "简体中文"}
 
 
 class lang_base(ABC):
+    select: str
+    back: str
+    cancel: str
+    done: str
     window_title: str
     window_title_add_rom: str
     menu_add_game: str
@@ -61,6 +65,10 @@ class lang_base(ABC):
 
 
 class zh_CN(lang_base):
+    select: str = "选择"
+    back: str = "返回"
+    cancel: str = "取消"
+    done: str = "完成"
     window_title: str = "LK合卡菜单制作GUI"
     window_title_add_rom: str = "添加ROM"
     menu_add_game: str = "添加"
@@ -109,6 +117,10 @@ class zh_CN(lang_base):
 
 
 class en_US(lang_base):
+    select: str = "Select"
+    back: str = "Back"
+    cancel: str = "Cancel"
+    done: str = "Done"
     window_title: str = "LK multirom menu builder GUI"
     window_title_add_rom: str = "Add a ROM"
     menu_add_game: str = "Add"
