@@ -50,8 +50,12 @@ class MenuBuilderGUI(tkinter.Tk):
                                 import winreg
 
                                 registry_path = "Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-                                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, registry_path)
-                                value, reg_type = winreg.QueryValueEx(key, "AppsUseLightTheme")
+                                key = winreg.OpenKey(
+                                    winreg.HKEY_CURRENT_USER, registry_path
+                                )
+                                value, reg_type = winreg.QueryValueEx(
+                                    key, "AppsUseLightTheme"
+                                )
                                 winreg.CloseKey(key)
                                 dark_mode = value == 0
                             except:
@@ -373,6 +377,8 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             if selected_file_path:
                 image = Image.open(selected_file_path)
                 if image.size == (240, 160):
+                    global image_lk_bg
+                    global bg_path
                     bg_path = selected_file_path
                     image_lk_bg = ImageTk.PhotoImage(file=selected_file_path)
                     label_image_lk_bg["image"] = image_lk_bg
