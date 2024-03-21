@@ -27,7 +27,9 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         match file_type:
             case ".gba":
                 out_file = "./game_patched/" + file_name_full
-                if HeaderReader.get_id(game["path"]) in ips_game_list:
+                if (
+                    HeaderReader.get_id(game["path"]) in ips_game_list
+                ):  # Some games can't be patched with the normal SRAM patch so use special ips patches for them.
                     Patcher.ips_patcher(
                         game["path"],
                         "./sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
@@ -37,26 +39,26 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     Patcher.sram_patcher(game["path"], out_file)
                 if not options["battery_present"] and game["save_slot"] is not None:
                     Patcher.batteryless_patcher(out_file, out_file)
-                game_json_elem = {
-                    "enabled": True,  # Who would add a game in the GUI but disable it?
-                    "file": file_name_full,
-                    "title": str(game["name"]),
-                    "title_font": 1,
-                    "save_slot": game["save_slot"],
-                }
             case ".gb" | ".gbc":
                 out_file = "./game_patched/" + file_name + ".gba"
-                EmulatorBuilder.build_goomba(game["path"], out_file)
-                game_json_elem = {
-                    "enabled": True,  # Who would add a game in the GUI but disable it?
-                    "file": file_name + ".gba",
-                    "title": str(game["name"]),
-                    "title_font": 1,
-                    "save_slot": game["save_slot"],
-                }
+                if not options["battery_present"] and game["save_slot"] is not None:
+                    EmulatorBuilder.build_goomba(
+                        game["path"],
+                        out_file,
+                        goomba_path="./emulator/jagoombacolor_batteryless.gba",
+                    )
+                else:
+                    EmulatorBuilder.build_goomba(game["path"], out_file)
             case _:
                 print(game)
                 print("Not acceptable")
+        game_json_elem = {
+            "enabled": True,  # Who would add a game in the GUI but disable it?
+            "file": file_name + ".gba",
+            "title": str(game["name"]),
+            "title_font": 1,
+            "save_slot": game["save_slot"],
+        }
         game_json_file.append(game_json_elem)
     fin_json = {"cartridge": options, "games": game_json_file}
     json_file = open("./builder.json", "w")
