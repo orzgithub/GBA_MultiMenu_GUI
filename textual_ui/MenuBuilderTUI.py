@@ -6,7 +6,7 @@ from textual.actions import *
 from textual.events import *
 
 from resources_src import Resource, I18n, Config
-import utils.MenuBuilder
+from utils import MenuBuilder
 
 
 # Binds are forced to load before init so it can only generate in a standalone way.
@@ -41,7 +41,7 @@ def LangBINDINGS(screen: str):
     return binding
 
 
-class MenuBuilder(App):
+class MenuBuilderTUI(App):
     class MainScreen(Screen):
         class Container_Games(Container):
             def __init__(
@@ -316,6 +316,6 @@ class MenuBuilder(App):
         argoptions["split"] = self.main_screen.container_menu.switch_split.value
         if self.main_screen.container_menu.input_bg_path.value != "":
             argoptions["bg"] = self.main_screen.container_menu.input_bg_path.value
-        utils.MenuBuilder.build_start(options, argoptions, game_list)
+        MenuBuilder.build_start(options, argoptions, game_list)
 
     CSS_PATH = "MenuBuilder.css"
