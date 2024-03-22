@@ -116,6 +116,7 @@ class MenuBuilderGUI(tkinter.Tk):
                         (app_lang.text_filetype_gba, ".gba"),
                         (app_lang.text_filetype_gbc, ".gbc"),
                         (app_lang.text_filetype_gb, ".gb"),
+                        (app_lang.text_filetype_nes, ".nes"),
                     ],
                 )
                 if selected_file_path:
