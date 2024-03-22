@@ -34,24 +34,42 @@ cp gba_patch$(python3-config --extension-suffix) ../lib
 cd ..
 ```
 
-You can also build it on windows but it's impossible to built with msvc without some works on batteryless patcher. So use msys2 toolchains instead.
+You can also build it on windows but it's impossible to built with msvc without some works on batteryless patcher. So
+use msys2 toolchains instead.
 
-This application also works for pypy and may other implements of python. But by default cmake would build it with cpython so you may need to make some changes on CMakeLists.txt.
+This application also works for pypy and may other implements of python. But by default cmake would build it with
+cpython so you may need to make some changes on CMakeLists.txt.
 
-If everything goes right it should work. Just MultiMenuGUI_tkinter.py like other python applications (Of course you need to install dependencies first and it's recommend to setup a venv.).
+If everything goes right it should work. Just MultiMenuGUI_tkinter.py like other python applications (Of course you need
+to install dependencies first and it's recommend to setup a venv.).
 
-Or you can build it with Nuitka or pack it with pyinstaller. Additional files like bg.png, lk_multimenu.gba won't be packed together with the final executable file so copy them together manually. Due to some limitations on nuitka, config.json should also be placed with executable before starting it, while it would be generated with default config automatically if you run it directly or packed by pyinstaller.
+Or you can build it with Nuitka or pack it with pyinstaller. Additional files like bg.png, lk_multimenu.gba won't be
+packed together with the final executable file so copy them together manually. Due to some limitations on nuitka,
+config.json should also be placed with executable before starting it, while it would be generated with default config
+automatically if you run it directly or packed by pyinstaller.
 
 ## Thanks
 
-[GBA Multi Game Menu](https://github.com/lesserkuma/GBA_MultiMenu) By lesserkuma
+[GBA Multi Game Menu](https://github.com/lesserkuma/GBA_MultiMenu) By [lesserkuma](https://github.com/lesserkuma)
 
 Used to build the menu.
 
-[Batteryless Patch](https://github.com/metroid-maniac/gba-auto-batteryless-patcher) By metroid maniac
+[Batteryless Patch](https://github.com/metroid-maniac/gba-auto-batteryless-patcher)
+By [metroid maniac](https://github.com/metroid-maniac)
 
 Used to patch the game with batteryless patch.
 
-[EZGBA](https://gbatemp.net/threads/release-ezgba-v0-1-0a-an-ez4-compatible-rom-patcher.395464/) By foobar_
+[EZGBA](https://gbatemp.net/threads/release-ezgba-v0-1-0a-an-ez4-compatible-rom-patcher.395464/)
+By [foobar_](https://gbatemp.net/members/foobar_.347556/)
 
 Used to patch the game with SRAM patch.
+
+[JaGoomba Color](https://github.com/EvilJagaGenius/jagoombacolor) By [EvilJagaGenius](https://github.com/EvilJagaGenius)
+and [it's fork](https://github.com/lesserkuma/jagoombacolor) By [lesserkuma](https://github.com/lesserkuma)
+
+Used to pack gb and gbc roms.
+
+[PocketNES](https://github.com/Dwedit/PocketNES) By [Dwedit](https://github.com/Dwedit)
+and [it's fork](https://github.com/lesserkuma/PocketNES) By [lesserkuma](https://github.com/lesserkuma)
+
+Used to pack nes roms.
