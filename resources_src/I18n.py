@@ -61,6 +61,7 @@ class lang_base(ABC):
     button_delete: str
     info_change_lang: str
     info_build_done: str
+    info_build_done_with_error: str
     error_image_size_not_allowed: str
 
 
@@ -113,6 +114,13 @@ class zh_CN(lang_base):
     button_delete: str = "删除"
     info_change_lang: str = "语言已改变，重启应用生效。"
     info_build_done: str = "生成完成"
+    info_build_done_with_error: str = (
+        "生成完成，但有错误发生\n"
+        "出错的游戏已跳过\n"
+        "错误日志已保存为%file_name\n"
+        "建议将日志和游戏ROM在Github项目中提交issue\n"
+        "如果你认为那不是你的错的话"
+    )
     error_image_size_not_allowed: str = "图片尺寸不符，无法作为菜单背景。 \n" "请选择一个240*160的png图片。"
 
 
@@ -167,6 +175,13 @@ class en_US(lang_base):
         "Language is changed. Restart the application to take effect."
     )
     info_build_done: str = "Generate finished"
+    info_build_done_with_error: str = (
+        "Generated finished with error\n"
+        "games with error are skipped\n"
+        "error log is saved as %file_name\n"
+        "it's suggested to make an issue on github\n"
+        "if you think that's not your fault"
+    )
     error_image_size_not_allowed: str = (
         "Size of the image is wrong. \n" "Please use a 240*160 pixel image."
     )

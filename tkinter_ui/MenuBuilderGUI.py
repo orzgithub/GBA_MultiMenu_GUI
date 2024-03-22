@@ -1,3 +1,5 @@
+import datetime
+import json
 import os.path
 import tkinter
 import tkinter.messagebox
@@ -423,8 +425,32 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             )
             if path_save:
                 argoptions["output"] = path_save
-                MenuBuilder.build_start(options, argoptions, game_list)
-                tkinter.messagebox.showinfo(message=app_lang.info_build_done)
+                build_error = list(
+                    MenuBuilder.build_start(options, argoptions, game_list)
+                )
+                if len(build_error) == 0:
+                    tkinter.messagebox.showinfo(message=app_lang.info_build_done)
+                else:
+                    error_list = []
+                    for error in build_error:
+                        error_list.append({"game": error[0], "type": error[1]})
+                    error_log = {
+                        "options": options,
+                        "argoptions": argoptions,
+                        "error": error_list,
+                    }
+                    log_file_name = (
+                        "error-"
+                        + datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+                        + ".log"
+                    )
+                    with open(log_file_name, "w") as log:
+                        json.dump(error_log, log)
+                    tkinter.messagebox.showinfo(
+                        message=app_lang.info_build_done_with_error.replace(
+                            "%file_name", log_file_name
+                        )
+                    )
 
         button_lk_build = tkinter.ttk.Button(
             frame_rom_gen, text=app_lang.button_lk_build, command=start_build

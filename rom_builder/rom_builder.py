@@ -150,14 +150,14 @@ def build(args_set: dict = None):
         logp("Error: The file must not be named “lk_multimenu.gba”")
         if not args.no_wait:
             input("\nPress ENTER to exit.\n")
-        sys.exit(1)
+        return 1
     if not os.path.exists("lk_multimenu.gba"):
         logp(
             "Error: The Menu ROM is missing.\nPlease put it in the same directory that you are running this tool from.\nExpected file name: “lk_multimenu.gba”"
         )
         if not args.no_wait:
             input("\nPress ENTER to exit.\n")
-        sys.exit()
+        return 0
 
     # Read game list
     files = []
@@ -204,7 +204,7 @@ def build(args_set: dict = None):
             )
         if not args.no_wait:
             input("\nPress ENTER to exit.\n")
-        sys.exit()
+        return 0
     else:
         with open(args.config, "r", encoding="UTF-8-SIG") as f:
             try:
@@ -216,7 +216,7 @@ def build(args_set: dict = None):
                 )
                 if not args.no_wait:
                     input("\nPress ENTER to exit.\n")
-                sys.exit()
+                return 0
             games = j["games"]
             cartridge_type = j["cartridge"]["type"] - 1
             battery_present = j["cartridge"]["battery_present"]
@@ -468,7 +468,7 @@ def build(args_set: dict = None):
         logp(
             f"No ROMs found. Delete the “{args.config:s}” file to reset your configuration."
         )
-        sys.exit()
+        return 0
 
     # Add index
     index = 0
@@ -677,4 +677,6 @@ def build(args_set: dict = None):
 
 
 if __name__ == "__main__":
-    build()
+    ret = build()
+    if ret is not None and ret != 0:
+        sys.exit(ret)

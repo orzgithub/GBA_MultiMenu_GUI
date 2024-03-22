@@ -155,7 +155,7 @@ int patch(char *rom_path, char *out_path)
 		if (romsize + 0x80000 > 0x2000000)
 		{
 			puts("ROM alraedy max size. Cannot expand. Cannot install payload");
-			return 1;
+			return 0;
 		}
 		else
 		{
@@ -176,7 +176,7 @@ int patch(char *rom_path, char *out_path)
 	if (rom[3] != 0xea)
 	{
 		puts("Unexpected entrypoint instruction");
-		return 1;
+		return 2;
 	}
 	unsigned long original_entrypoint_offset = rom[0];
 	original_entrypoint_offset |= rom[1] << 8;
@@ -311,7 +311,7 @@ int patch(char *rom_path, char *out_path)
     {
         puts("Could not open output file");
         puts(strerror(errno));
-        return 1;
+        return 2;
     }
     
     fwrite(rom, 1, romsize, outfile);

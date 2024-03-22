@@ -20,25 +20,34 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         shutil.rmtree("./game_patched")
     os.makedirs("./game_patched")
     for game in gamelist:
-        file_name_full = os.path.basename(game["path"])
-        file_name = os.path.splitext(file_name_full)[0]
-        file_type = os.path.splitext(file_name_full)[1]
-        game_json_elem = dict()
-        match file_type:
+        file_name_full: str = os.path.basename(game["path"])
+        file_name: str = os.path.splitext(file_name_full)[0]
+        file_type: str = os.path.splitext(file_name_full)[1]
+        game_json_elem: dict = dict()
+        match file_type.lower():
             case ".gba":
                 out_file = "./game_patched/" + file_name_full
                 if (
                     HeaderReader.get_id(game["path"]) in ips_game_list
                 ):  # Some games can't be patched with the normal SRAM patch so use special ips patches for them.
-                    Patcher.ips_patcher(
-                        game["path"],
-                        "./sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
-                        out_file,
-                    )
+                    if (
+                        Patcher.ips_patcher(
+                            game["path"],
+                            "./sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
+                            out_file,
+                        )
+                        == 1
+                    ):
+                        yield file_name_full, "IPS patch"
+                        continue
                 else:
-                    Patcher.sram_patcher(game["path"], out_file)
+                    if Patcher.sram_patcher(game["path"], out_file) == 1:
+                        yield file_name_full, "SRAM patch"
+                        continue
                 if not options["battery_present"] and game["save_slot"] is not None:
-                    Patcher.batteryless_patcher(out_file, out_file)
+                    if Patcher.batteryless_patcher(out_file, out_file) == 2:
+                        yield file_name_full, "batteryless patch"
+                        continue
             case ".gb" | ".gbc":
                 out_file = "./game_patched/" + file_name + ".gba"
                 if not options["battery_present"] and game["save_slot"] is not None:
