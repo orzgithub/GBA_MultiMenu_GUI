@@ -50,7 +50,7 @@ class lang_base(ABC):
     text_cart_min_size_list: dict[str, int] = {"4 MB": 4194304, "512 KB": 524288}
     text_about_title: str
     text_about_url: str = "https://github.com/orzgithub/GBA_MultiMenu_GUI"
-    text_about_version: str = "Beta 0.1"
+    text_about_version: str = "Beta 0.2"
     table_rom_headings: dict[str, str] = {"name": "", "path": "", "save_slot": ""}
     frame_rom_mgr: str
     frame_rom_gen: str
