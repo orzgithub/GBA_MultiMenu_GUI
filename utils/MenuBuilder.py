@@ -24,9 +24,9 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         file_name: str = os.path.splitext(file_name_full)[0]
         file_type: str = os.path.splitext(file_name_full)[1]
         game_json_elem: dict = dict()
+        out_file = "./game_patched/" + file_name + ".gba"
         match file_type.lower():
             case ".gba":
-                out_file = "./game_patched/" + file_name_full
                 if (
                     HeaderReader.get_id(game["path"]) in ips_game_list
                 ):  # Some games can't be patched with the normal SRAM patch so use special ips patches for them.
@@ -49,7 +49,6 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                         yield file_name_full, "batteryless patch"
                         continue
             case ".gb" | ".gbc":
-                out_file = "./game_patched/" + file_name + ".gba"
                 if not options["battery_present"] and game["save_slot"] is not None:
                     EmulatorBuilder.build_goomba(
                         game["path"],
@@ -58,9 +57,19 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     )
                 else:
                     EmulatorBuilder.build_goomba(game["path"], out_file)
+            case ".nes":
+                if not options["battery_present"] and game["save_slot"] is not None:
+                    EmulatorBuilder.build_pocketnes(
+                        game["path"],
+                        out_file,
+                        pocketnes_path="./emulator/pocketnes_batteryless.gba",
+                    )
+                else:
+                    EmulatorBuilder.build_pocketnes(game["path"], out_file)
             case _:
                 print(game)
                 print("Not acceptable")
+                continue
         game_json_elem = {
             "enabled": True,  # Who would add a game in the GUI but disable it?
             "file": file_name + ".gba",
