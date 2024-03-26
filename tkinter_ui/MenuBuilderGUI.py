@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import datetime
 import json
 import os.path
@@ -442,7 +444,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                     }
                     log_file_name = (
                         "error-"
-                        + datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+                        + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                         + ".log"
                     )
                     with open(log_file_name, "w") as log:
