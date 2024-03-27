@@ -29,12 +29,16 @@ ByteOffset_::operator bool() {
 
 
 void read_file(std::vector<unsigned char>& data, const std::string& file_path) {
-	fs::path file_path_boost(file_path);
+	fs::path file_path_fs(file_path);
 	std::ifstream fstrm;
 	std::streampos fsize;
 	size_t max_size = std::numeric_limits<size_t>::max();
 
-	fstrm.open(file_path_boost.c_str(), std::ios::binary | std::ios::ate);
+#if defined(__cpp_lib_filesystem)
+	fstrm.open(file_path_fs, std::ios::binary | std::ios::ate);
+#else
+    fstrm.open(file_path_fs.c_str(), std::ios::binary | std::ios::ate);
+#endif
 
 	if (fstrm.is_open()) {
 		fsize = fstrm.tellg();

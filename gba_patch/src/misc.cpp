@@ -1,7 +1,12 @@
 #include <iostream>
 #include <vector>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#if defined(__cpp_lib_filesystem)
+#include <filesystem>
+namespace fs = std::filesystem;
+#else
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+#endif
 
 
 #include "misc.hpp"
@@ -10,7 +15,6 @@
 #include "patch.hpp"
 
 
-namespace fs = boost::filesystem;
 
 
 bool process_rom(const std::string & input_file, const std::string & output_file, const Options & opts) {
