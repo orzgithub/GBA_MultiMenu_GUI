@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from lib import batteryless_patch
 from lib import gba_patch
 

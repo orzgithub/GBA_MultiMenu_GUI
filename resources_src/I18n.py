@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from abc import ABC
 
 # In order to add a new language please just add it to lang_dict and then create a new class for it.

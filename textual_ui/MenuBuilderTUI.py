@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from textual.app import *
 from textual.widgets import *
 from textual.binding import *

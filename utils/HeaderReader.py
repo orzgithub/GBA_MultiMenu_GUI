@@ -1,3 +1,5 @@
+# coding=utf-8
+
 def get_id(rom_path: str) -> str:
     with open(rom_path, "rb") as rom:
         rom.seek(0x00AC)
