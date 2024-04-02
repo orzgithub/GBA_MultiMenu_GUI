@@ -337,6 +337,7 @@ int patch(char *rom_path, char *out_path)
     fflush(outfile);
 
     printf("Patched successfully. Changes written to %s\n",out_path);
+    fclose(outfile);
 	return 0;
 	
 }
