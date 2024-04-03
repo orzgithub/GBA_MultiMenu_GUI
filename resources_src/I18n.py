@@ -46,7 +46,7 @@ class lang_base(ABC):
     text_cart_type_list: list[str] = [
         "MSP55LV100S",
         "6600M0U0BE",
-        "MSP55LV100",
+        "MSP54LV100",
         "F0095H0",
     ]
     text_cart_min_size_list: dict[str, int] = {"4 MB": 4194304, "512 KB": 524288}
