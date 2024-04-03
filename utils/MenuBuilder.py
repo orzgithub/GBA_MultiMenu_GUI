@@ -17,6 +17,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
             ips_game_list[i] = os.path.splitext(ips_game_list[i])[0]
     else:
         ips_game_list = list()
+    emu_game_list = ["GMBC", "PNES"]
     game_json_file = list()
     if os.path.exists("./game_patched"):
         shutil.rmtree("./game_patched")
@@ -42,11 +43,19 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     ):
                         yield file_name_full, "IPS patch"
                         continue
+                elif (
+                    HeaderReader.get_id(game["path"]) in emu_game_list
+                ):  # Skip game patch if it's emulator.
+                    shutil.copy(game["path"], out_file)
                 else:
                     if Patcher.sram_patcher(game["path"], out_file) == 1:
                         yield file_name_full, "SRAM patch"
                         continue
-                if not options["battery_present"] and game["save_slot"] is not None:
+                if (
+                    not options["battery_present"]
+                    and game["save_slot"] is not None
+                    and HeaderReader.get_id(game["path"]) not in emu_game_list
+                ):
                     if Patcher.batteryless_patcher(out_file, out_file) == 2:
                         yield file_name_full, "batteryless patch"
                         continue
