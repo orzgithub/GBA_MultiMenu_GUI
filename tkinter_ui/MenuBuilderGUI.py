@@ -296,7 +296,8 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         def delete_game():
             selection = table_game_list.selection()
             if selection:
-                table_game_list.delete(selection[0])
+                for cselection in selection:
+                    table_game_list.delete(cselection)
 
         def add_game(game_info):
             table_game_list.insert(
