@@ -71,11 +71,13 @@ class MenuBuilderTUI(App):
                 button_id = event.button.id
                 match button_id:
                     case "button-del-game":
-                        cur_game, _ = self.table_game_list.coordinate_to_cell_key(
-                            self.table_game_list.cursor_coordinate
-                        )
-                        if self.table_game_list.is_valid_coordinate(cur_game):
+                        try:
+                            cur_game, _ = self.table_game_list.coordinate_to_cell_key(
+                                self.table_game_list.cursor_coordinate
+                            )
                             self.table_game_list.remove_row(cur_game)
+                        except:
+                            pass
 
             def _on_mount(self, event: Mount):
                 self.border_title = self.lang.frame_rom_mgr
