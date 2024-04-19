@@ -91,7 +91,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         game_json_file.append(game_json_elem)
     fin_json = {"cartridge": options, "games": game_json_file}
     json_file = open("./builder.json", "w")
-    json_file.write(json.dumps(fin_json))
+    json_file.write(json.dumps(obj=fin_json, indent=4, ensure_ascii=False))
     json_file.close()
 
     build_config: dict = rom_builder.args_dict_template.copy()
