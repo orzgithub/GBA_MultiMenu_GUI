@@ -53,7 +53,7 @@ class MenuBuilderGUI(tkinter.Tk):
                             try:
                                 import winreg
 
-                                registry_path = "Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+                                registry_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
                                 key = winreg.OpenKey(
                                     winreg.HKEY_CURRENT_USER, registry_path
                                 )
