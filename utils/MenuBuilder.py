@@ -5,9 +5,9 @@ import os
 import shutil
 import typing
 
-from utils import Patcher
-from utils import HeaderReader
-from utils import EmulatorBuilder
+from . import Patcher
+from . import HeaderReader
+from . import EmulatorBuilder
 from rom_builder import rom_builder
 
 
