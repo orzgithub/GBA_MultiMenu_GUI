@@ -1,28 +1,38 @@
 # -*- coding: utf-8 -*-
 # GBA Multi Game Menu – ROM Builder
 # Author: Lesserkuma (github.com/lesserkuma)
-
-import sys, os, glob, json, math, re, struct, hashlib, argparse, datetime
+import sys, os, glob, json, math, re, struct, hashlib, argparse, datetime, dataclasses, typing
 
 # Configuration
 app_version = "1.1"
 
 ################################
 
-args_dict_template: dict = {
-    "split": False,
-    "no-wait": False,
-    "no-log": False,
-    "config": "config.json",
-    "bg": "bg.png",
-    "output": "LK_MULTIMENU_<CODE>.gba",
-    "rom-base-path": "roms",
-}
+
+class FuncModeRet(typing.NamedTuple):
+    msg: str
+    data: dict | list | None
+    success: bool
+
+
+@dataclasses.dataclass
+class Args:
+    split: bool = False
+    no_wait: bool = False
+    no_log: bool = False
+    config: str = "config.json"
+    bg: str = "bg.png"
+    output: str = "LK_MULTIMENU_<CODE>.gba"
+    rom_base_path: str = "roms"
+    cli_mode: bool = True
+
 
 log = ""
 
 
-def build(args_set: dict = None):
+def build(args_set: dict = None) -> FuncModeRet | int:
+    args: Args = Args(**args_set)
+
     def UpdateSectorMap(start, length, c):
         sector_map[start + 1 : start + length] = c * (length - 1)
         sector_map[start] = c.upper()
@@ -80,84 +90,21 @@ def build(args_set: dict = None):
 
     logp("GBA Multi Game Menu ROM Builder v{:s}\nby Lesserkuma\n".format(app_version))
 
-    class ArgParseCustomFormatter(
-        argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
-    ):
-        pass
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--split",
-        help="splits output files into 32 MiB parts",
-        action="store_true",
-        default=args_dict_template["split"],
-    )
-    parser.add_argument(
-        "--no-wait",
-        help="don’t wait for user input when finished",
-        action="store_true",
-        default=args_dict_template["no-wait"],
-    )
-    parser.add_argument(
-        "--no-log",
-        help="don’t write a log file",
-        action="store_true",
-        default=args_dict_template["no-log"],
-    )
-    parser.add_argument(
-        "--config",
-        type=str,
-        default=args_dict_template["config"],
-        help="sets the config file to use",
-    )
-    parser.add_argument(
-        "--bg",
-        type=str,
-        default=args_dict_template["bg"],
-        help="sets the background image to use",
-    )
-    parser.add_argument(
-        "--output",
-        type=str,
-        default=args_dict_template["output"],
-        help="sets the file name of the compilation ROM",
-    )
-    parser.add_argument(
-        "--rom-base-path",
-        help="sets the folder where the ROM stored",
-        action="store_true",
-        default=args_dict_template["rom-base-path"],
-    )
-    args = parser.parse_args()
-    if args_set != None:
-        fkeys = args_set.keys()
-        if "split" in fkeys:
-            args.split = args_set["split"]
-        if "no-wait" in fkeys:
-            args.no_wait = args_set["no-wait"]
-        if "no-log" in fkeys:
-            args.no_log = args_set["no-log"]
-        if "config" in fkeys:
-            args.config = args_set["config"]
-        if "bg" in fkeys:
-            args.bg = args_set["bg"]
-        if "output" in fkeys:
-            args.output = args_set["output"]
-        if "rom-base-path" in fkeys:
-            args.rom_base_path = args_set["rom-base-path"]
     output_file = args.output
     if output_file == "lk_multimenu.gba":
         logp("Error: The file must not be named “lk_multimenu.gba”")
         if not args.no_wait:
             input("\nPress ENTER to exit.\n")
-        return 1
+        return 1 if args.cli_mode else FuncModeRet("Wrong output name.", None, False)
     if not os.path.exists("lk_multimenu.gba"):
         logp(
             "Error: The Menu ROM is missing.\nPlease put it in the same directory that you are running this tool from.\nExpected file name: “lk_multimenu.gba”"
         )
         if not args.no_wait:
             input("\nPress ENTER to exit.\n")
-        return 0
+        return (
+            0 if args.cli_mode else FuncModeRet("Couldn't found base rom.", None, False)
+        )
 
     # Read game list
     files = []
@@ -200,11 +147,17 @@ def build(args_set: dict = None):
             with open(args.config, "w", encoding="UTF-8-SIG") as f:
                 f.write(json.dumps(obj=obj, indent=4, ensure_ascii=False))
             logp(
-                f"A new configuration file ({args.config:s}) was created based on the files inside the “{args.rom_base_path}” folder.\nPlease edit the file to your liking in a text editor, then run this tool again."
+                f"A new configuration file ({args.config:s}) was created based on the files inside the “{args.rom_base_path:s}” folder.\nPlease edit the file to your liking in a text editor, then run this tool again."
             )
         if not args.no_wait:
             input("\nPress ENTER to exit.\n")
-        return 0
+        return (
+            0
+            if args.cli_mode
+            else FuncModeRet(
+                f"Config {args.rom_base_path:s}/{args.config:s} generated.", None, True
+            )
+        )
     else:
         with open(args.config, "r", encoding="UTF-8-SIG") as f:
             try:
@@ -216,7 +169,11 @@ def build(args_set: dict = None):
                 )
                 if not args.no_wait:
                     input("\nPress ENTER to exit.\n")
-                return 0
+                return (
+                    1
+                    if args.cli_mode
+                    else FuncModeRet(f"Config couldn't prease.", None, False)
+                )
             games = j["games"]
             cartridge_type = j["cartridge"]["type"] - 1
             battery_present = j["cartridge"]["battery_present"]
@@ -259,7 +216,7 @@ def build(args_set: dict = None):
         ] = build_timestamp
 
     # Change background image
-    if args.bg or os.path.exists("bg.png"):
+    if args.bg != Args.bg or os.path.exists("bg.png"):
         try:
             from PIL import Image
 
@@ -279,11 +236,11 @@ def build(args_set: dict = None):
             for color in palette_rgb555:
                 raw_palette[pos : pos + 2] = struct.pack("<H", color)
                 pos += 2
-            menu_rom_bg_offset = menu_rom.find(b"RTFN\xFF\xFE") - 0x9800
+            menu_rom_bg_offset = menu_rom.find(b"RTFN\xff\xfe") - 0x9800
             menu_rom[menu_rom_bg_offset : menu_rom_bg_offset + 0x9600] = raw_bitmap
-            menu_rom[
-                menu_rom_bg_offset + 0x9600 : menu_rom_bg_offset + 0x9800
-            ] = raw_palette
+            menu_rom[menu_rom_bg_offset + 0x9600 : menu_rom_bg_offset + 0x9800] = (
+                raw_palette
+            )
         except ImportError:
             print(
                 "Error: Couldn’t update background image. Pillow library is not installed."
@@ -468,8 +425,11 @@ def build(args_set: dict = None):
         logp(
             f"No ROMs found. Delete the “{args.config:s}” file to reset your configuration."
         )
-        return 0
-
+        return (
+            1
+            if args.cli_mode
+            else FuncModeRet(f"Some games in config missing.", None, False)
+        )
     # Add index
     index = 0
     for game in games:
@@ -477,6 +437,7 @@ def build(args_set: dict = None):
         index += 1
 
     # Read ROM data
+    games_not_found: list = []
     games.sort(key=lambda game: game["size"], reverse=True)
     for game in games:
         found = False
@@ -533,6 +494,7 @@ def build(args_set: dict = None):
                         boot_logo_found = True
                     break
         if not found:
+            games_not_found.append(game)
             logp(
                 "“{:s}” couldn’t be added because it exceeds the available cartridge space.".format(
                     game["title"]
@@ -674,9 +636,80 @@ def build(args_set: dict = None):
             f.write(log.encode("UTF-8-SIG"))
     if not args.no_wait:
         input("\nPress ENTER to exit.\n")
+    return (
+        0
+        if args.cli_mode
+        else FuncModeRet(
+            f"Target rom generated.{" Some games failed to included." if games_not_found else ""}",
+            games_not_found,
+            True,
+        )
+    )
 
 
 if __name__ == "__main__":
-    ret = build()
+
+    class ArgParseCustomFormatter(
+        argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
+    ):
+        pass
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--split",
+        help="splits output files into 32 MiB parts",
+        action="store_true",
+        default=Args.split,
+    )
+    parser.add_argument(
+        "--no-wait",
+        help="don’t wait for user input when finished",
+        action="store_true",
+        default=Args.no_wait,
+    )
+    parser.add_argument(
+        "--no-log",
+        help="don’t write a log file",
+        action="store_true",
+        default=Args.no_log,
+    )
+    parser.add_argument(
+        "--config",
+        type=str,
+        default=Args.config,
+        help="sets the config file to use",
+    )
+    parser.add_argument(
+        "--bg",
+        type=str,
+        default=Args.bg,
+        help="sets the background image to use",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=Args.output,
+        help="sets the file name of the compilation ROM",
+    )
+    parser.add_argument(
+        "--rom-base-path",
+        type=str,
+        default=Args.rom_base_path,
+        help="sets the folder where the ROM stored",
+    )
+
+    args = parser.parse_args()
+    ret = build(
+        {
+            "split": args.split,
+            "no_wait": args.no_wait,
+            "no_log": args.no_log,
+            "config": args.config,
+            "bg": args.bg,
+            "output": args.output,
+            "rom_base_path": args.rom_base_path,
+            "cli_mode": True,
+        }
+    )
     if ret is not None and ret != 0:
         sys.exit(ret)

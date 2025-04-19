@@ -432,27 +432,30 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             )
             if path_save:
                 argoptions["output"] = path_save
-                build_error = list(
-                    MenuBuilder.build_start(options, argoptions, game_list)
-                )
-                if len(build_error) == 0:
+                steps = len(game_list) + 1
+                msg, err = [], []
+                for result in MenuBuilder.build_start(options, argoptions, game_list):
+                    if result.success:
+                        msg.append(result)
+                    else:
+                        err.append(result)
+                if len(err) == 0:
                     tkinter.messagebox.showinfo(message=app_lang.info_build_done)
                 else:
                     error_list = []
-                    for error in build_error:
-                        error_list.append({"game": error[0], "type": error[1]})
+                    for error in err:
+                        print(error)
+                        error_list.append(
+                            {"game": error.path, "type": error.type, "msg": error.msg}
+                        )
                     error_log = {
                         "options": options,
                         "argoptions": argoptions,
                         "error": error_list,
                     }
-                    log_file_name = (
-                        "error-"
-                        + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                        + ".log"
-                    )
+                    log_file_name = f"error-{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log"
                     with open(log_file_name, "w") as log:
-                        json.dump(error_log, log)
+                        json.dump(error_log, log, indent=2, ensure_ascii=False)
                     tkinter.messagebox.showinfo(
                         message=app_lang.info_build_done_with_error.replace(
                             "%file_name", log_file_name

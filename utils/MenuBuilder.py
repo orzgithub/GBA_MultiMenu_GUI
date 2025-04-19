@@ -1,13 +1,21 @@
 # coding=utf-8
-
+import dataclasses
 import json
 import os
 import shutil
+import typing
 
 from utils import Patcher
 from utils import HeaderReader
 from utils import EmulatorBuilder
 from rom_builder import rom_builder
+
+
+class BuildInfo(typing.NamedTuple):
+    path: str
+    type: str
+    msg: str
+    success: bool
 
 
 def build_start(options: dict, argoptions: dict, gamelist: list):
@@ -42,24 +50,49 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                         )
                         == 1
                     ):
-                        yield file_name_full, "IPS patch"
+                        yield BuildInfo(
+                            file_name_full, "IPS patch", "IPS patch failed.", False
+                        )
                         continue
+                    else:
+                        yield BuildInfo(
+                            file_name_full, "IPS patch", "IPS patch succeed.", True
+                        )
+
                 elif (
                     HeaderReader.get_id(game["path"]) in emu_game_list
                 ):  # Skip game patch if it's emulator.
                     shutil.copy(game["path"], out_file)
                 else:
                     if Patcher.sram_patcher(game["path"], out_file) == 1:
-                        yield file_name_full, "SRAM patch"
+                        yield BuildInfo(
+                            file_name_full, "SRAM patch", "SRAM patch failed.", False
+                        )
                         continue
+                    else:
+                        yield BuildInfo(
+                            file_name_full, "SRAM patch", "SRAM patch succeed.", True
+                        )
                 if (
                     not options["battery_present"]
                     and game["save_slot"] is not None
                     and HeaderReader.get_id(game["path"]) not in emu_game_list
                 ):
                     if Patcher.batteryless_patcher(out_file, out_file) == 2:
-                        yield file_name_full, "batteryless patch"
+                        yield BuildInfo(
+                            file_name_full,
+                            "batteryless patch",
+                            "Batteryless patch failed.",
+                            False,
+                        )
                         continue
+                    else:
+                        yield BuildInfo(
+                            file_name_full,
+                            "batteryless patch",
+                            "Batteryless patch succeed.",
+                            True,
+                        )
             case ".gb" | ".gbc":
                 if not options["battery_present"] and game["save_slot"] is not None:
                     EmulatorBuilder.build_goomba(
@@ -69,6 +102,9 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     )
                 else:
                     EmulatorBuilder.build_goomba(game["path"], out_file)
+                yield BuildInfo(
+                    file_name_full, "goomba build", "Goomba build succeed.", True
+                )
             case ".nes":
                 if not options["battery_present"] and game["save_slot"] is not None:
                     EmulatorBuilder.build_pocketnes(
@@ -78,9 +114,15 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     )
                 else:
                     EmulatorBuilder.build_pocketnes(game["path"], out_file)
+                yield BuildInfo(
+                    file_name_full, "pocketnes build", "PocketNES build succeed.", True
+                )
             case _:
                 print(game)
                 print("Not acceptable")
+                yield BuildInfo(
+                    file_name_full, "type detect", "Not a valid type.", False
+                )
                 continue
         game_json_elem = {
             "enabled": True,  # Who would add a game in the GUI but disable it?
@@ -95,17 +137,37 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
     json_file.write(json.dumps(obj=fin_json, indent=4, ensure_ascii=False))
     json_file.close()
 
-    build_config: dict = rom_builder.args_dict_template.copy()
-    build_config["no-wait"] = True
-    build_config["no-log"] = True
-    build_config["config"] = "builder.json"
-    build_config["rom-base-path"] = rom_out_dir
+    build_config: rom_builder.Args = rom_builder.Args()
+    build_config.cli_mode = False
+    build_config.no_wait = True
+    build_config.no_log = True
+    build_config.config = "builder.json"
+    build_config.rom_base_path = rom_out_dir
     if "bg" in argoptions.keys():
-        build_config["bg"] = argoptions["bg"]
+        build_config.bg = argoptions["bg"]
     if "split" in argoptions.keys():
-        build_config["split"] = argoptions["split"]
-    if "bg" in argoptions.keys():
-        build_config["bg"] = argoptions["bg"]
+        build_config.split = argoptions["split"]
     if "output" in argoptions.keys():
-        build_config["output"] = argoptions["output"]
-    rom_builder.build(build_config)
+        build_config.output = argoptions["output"]
+    build_result: rom_builder.FuncModeRet = rom_builder.build(
+        dataclasses.asdict(build_config)
+    )
+    if build_result.success:
+        if not build_result.msg:
+            yield BuildInfo(
+                build_config.output, "multimenu build", "Multimenu build success.", True
+            )
+        else:
+            yield BuildInfo(
+                build_config.output,
+                "multimenu build",
+                f"Multimenu build success but the following games are not included because not enough space on the cartridge: {', '.join(map(lambda g:g["title"],build_result.data))}.",
+                False,
+            )
+    else:
+        yield BuildInfo(
+            build_config.output,
+            "multimenu build",
+            f"Multimenu build failure, reason: {build_result.msg}.",
+            False,
+        )
