@@ -1,6 +1,13 @@
 # coding=utf-8
 
 from gba_patch_py.patch import apply_ips_patch, patch_complement_check
+from batteryless_patch_py.batteryless_patch import patch as batteryless_patch
+
+
+def batteryless_patcher(
+    rom_path: str, out_path: str
+) -> int:  # 0: Done 1: Failed but ok 2: Failed and broken
+    return batteryless_patch(rom_path, out_path)
 
 
 def ips_patcher(
