@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Designed on ArchLinux, x86_64. Mot guaranteed to work on other platforms.
+# Designed on ArchLinux, x86_64. Not guaranteed to work on other platforms.
 
 CC=clang++
 #Or changing it to g++ if you wish to build it with gcc.
