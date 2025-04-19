@@ -11,14 +11,11 @@ WRITE_EEPROM_PATCHED = 5
 WRITE_FLASH_PATCHED = 6
 WRITE_EEPROM_V111_POSTHOOK = 7
 
-# 签名数据
 signature = b"<3 from Maniac"
 
-# 跳转thunk
 thumb_branch_thunk = bytes([0x00, 0x4B, 0x18, 0x47])
 arm_branch_thunk = bytes([0x00, 0x30, 0x9F, 0xE5, 0x13, 0xFF, 0x2F, 0xE1])
 
-# 各种保存函数的签名
 write_sram_signature = bytes(
     [
         0x30,
@@ -187,7 +184,7 @@ write_eepromv111_signature = bytes(
 
 
 def memfind(haystack, needle, stride=4):
-    """在haystack中查找needle字节序列"""
+    """find needle byte array in haystack"""
     needle_len = len(needle)
     for i in range(0, len(haystack) - needle_len + 1, stride):
         if haystack[i : i + needle_len] == needle:
@@ -196,14 +193,14 @@ def memfind(haystack, needle, stride=4):
 
 
 def patch(rom_path, out_path):
-    """主补丁函数"""
-    if not rom_path.lower().endswith('.gba'):
+    """Main patch function"""
+    if not rom_path.lower().endswith(".gba"):
         print("File does not have .gba extension.")
         return 1
 
         # Read ROM file
     try:
-        with open(rom_path, 'rb') as f:
+        with open(rom_path, "rb") as f:
             rom = bytearray(f.read())
     except IOError as e:
         print(f"Could not open input file: {e}")
@@ -221,7 +218,7 @@ def patch(rom_path, out_path):
     if romsize & 0x3FFFF:
         print("ROM has been trimmed and is misaligned. Padding to 256KB alignment")
         romsize = (romsize & ~0x3FFFF) + 0x40000
-        rom.extend(b'\xFF' * (romsize - len(rom)))
+        rom.extend(b"\xff" * (romsize - len(rom)))
 
     # Check if already patched
     if memfind(rom, signature) is not None:
@@ -241,17 +238,19 @@ def patch(rom_path, out_path):
         idx += pos
         found_irq += 1
         print(f"Found a reference to the IRQ handler address at {hex(idx)}, patching")
-        rom[idx:idx + 4] = new_irq_addr
+        rom[idx : idx + 4] = new_irq_addr
         pos = idx + 4
 
     if not found_irq:
-        print("Could not find any reference to the IRQ handler. Has the ROM already been patched?")
+        print(
+            "Could not find any reference to the IRQ handler. Has the ROM already been patched?"
+        )
         return 1
 
     # Find payload location
     payload_base = None
     for base in range(romsize - 0x40000 - len(payload_bin), -1, -0x40000):
-        region = rom[base:base + 0x40000 + len(payload_bin)]
+        region = rom[base : base + 0x40000 + len(payload_bin)]
         if all(b == 0 for b in region) or all(b == 0xFF for b in region):
             payload_base = base
             break
@@ -264,16 +263,17 @@ def patch(rom_path, out_path):
         else:
             print("Expanding ROM")
             romsize += 0x80000
-            rom.extend(b'\xFF' * 0x80000)
+            rom.extend(b"\xff" * 0x80000)
             payload_base = romsize - 0x40000 - len(payload_bin)
 
     print(
-        f"Installing payload at offset {hex(payload_base)}, save file stored at {hex(payload_base + len(payload_bin))}")
-    rom[payload_base:payload_base + len(payload_bin)] = payload_bin
+        f"Installing payload at offset {hex(payload_base)}, save file stored at {hex(payload_base + len(payload_bin))}"
+    )
+    rom[payload_base : payload_base + len(payload_bin)] = payload_bin
 
     # Set flush mode
     mode = 0
-    struct.pack_into('<I', rom, payload_base + FLUSH_MODE * 4, mode)
+    struct.pack_into("<I", rom, payload_base + FLUSH_MODE * 4, mode)
 
     # Patch ROM entrypoint
     if rom[3] != 0xEA:
@@ -283,18 +283,26 @@ def patch(rom_path, out_path):
     original_entrypoint_offset = rom[0] | (rom[1] << 8) | (rom[2] << 16)
     original_entrypoint_address = 0x08000000 + 8 + (original_entrypoint_offset << 2)
     print(
-        f"Original offset was {hex(original_entrypoint_offset)}, original entrypoint was {hex(original_entrypoint_address)}")
+        f"Original offset was {hex(original_entrypoint_offset)}, original entrypoint was {hex(original_entrypoint_address)}"
+    )
 
     # Store original entrypoint address in payload
-    struct.pack_into('<I', rom, payload_base + ORIGINAL_ENTRYPOINT_ADDR * 4, original_entrypoint_address)
+    struct.pack_into(
+        "<I",
+        rom,
+        payload_base + ORIGINAL_ENTRYPOINT_ADDR * 4,
+        original_entrypoint_address,
+    )
 
     # Calculate new entrypoint address
-    patched_entrypoint_offset = struct.unpack_from('<I', payload_bin, PATCHED_ENTRYPOINT * 4)[0]
+    patched_entrypoint_offset = struct.unpack_from(
+        "<I", payload_bin, PATCHED_ENTRYPOINT * 4
+    )[0]
     new_entrypoint_address = 0x08000000 + payload_base + patched_entrypoint_offset
 
     # Modify ROM entrypoint
     new_offset = (new_entrypoint_address - 0x08000008) >> 2
-    rom[0:4] = struct.pack('<I', 0xEA000000 | (new_offset & 0x00FFFFFF))
+    rom[0:4] = struct.pack("<I", 0xEA000000 | (new_offset & 0x00FFFFFF))
 
     # Find and patch write functions
     found_write_location = False
@@ -302,19 +310,31 @@ def patch(rom_path, out_path):
 
     # Define signature handlers
     def patch_thumb(rom, offset, payload_base, payload_offset):
-        rom[offset:offset + 4] = thumb_branch_thunk
-        target_addr = 0x08000000 + payload_base + struct.unpack_from('<I', payload_bin, payload_offset * 4)[0]
-        rom[offset + 4:offset + 8] = struct.pack('<I', target_addr)
+        rom[offset : offset + 4] = thumb_branch_thunk
+        target_addr = (
+            0x08000000
+            + payload_base
+            + struct.unpack_from("<I", payload_bin, payload_offset * 4)[0]
+        )
+        rom[offset + 4 : offset + 8] = struct.pack("<I", target_addr)
 
     def patch_arm(rom, offset, payload_base, payload_offset):
-        rom[offset:offset + 8] = arm_branch_thunk
-        target_addr = 0x08000000 + payload_base + struct.unpack_from('<I', payload_bin, payload_offset * 4)[0]
-        rom[offset + 8:offset + 12] = struct.pack('<I', target_addr)
+        rom[offset : offset + 8] = arm_branch_thunk
+        target_addr = (
+            0x08000000
+            + payload_base
+            + struct.unpack_from("<I", payload_bin, payload_offset * 4)[0]
+        )
+        rom[offset + 8 : offset + 12] = struct.pack("<I", target_addr)
 
     def patch_eeprom_v111(rom, offset, payload_base, payload_offset):
-        rom[offset + 12:offset + 16] = write_eepromv11_epilogue_patch
-        target_addr = 0x08000000 + payload_base + struct.unpack_from('<I', payload_bin, payload_offset * 4)[0]
-        rom[offset + 11 * 4:offset + 12 * 4] = struct.pack('<I', target_addr)
+        rom[offset + 12 : offset + 16] = write_eepromv11_epilogue_patch
+        target_addr = (
+            0x08000000
+            + payload_base
+            + struct.unpack_from("<I", payload_bin, payload_offset * 4)[0]
+        )
+        rom[offset + 11 * 4 : offset + 12 * 4] = struct.pack("<I", target_addr)
 
     # Signature patterns and their handlers
     signatures = [
@@ -363,18 +383,19 @@ def patch(rom_path, out_path):
     if not found_write_location:
         if not mode:
             print(
-                "Could not find a write function to hook. Are you sure the game has save functionality and has been SRAM patched with GBATA?")
+                "Could not find a write function to hook. Are you sure the game has save functionality and has been SRAM patched with GBATA?"
+            )
             return 1
         else:
             print("Unsure what save type this is. Defaulting to 128KB save")
             save_size = 0x20000
 
     if save_size is not None:
-        struct.pack_into('<I', rom, payload_base + SAVE_SIZE * 4, save_size)
+        struct.pack_into("<I", rom, payload_base + SAVE_SIZE * 4, save_size)
 
     # Write output file
     try:
-        with open(out_path, 'wb') as f:
+        with open(out_path, "wb") as f:
             f.write(rom)
         print(f"Patched successfully. Changes written to {out_path}")
     except IOError as e:
