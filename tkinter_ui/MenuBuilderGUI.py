@@ -432,8 +432,9 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 parent=self, filetypes=[(app_lang.text_filetype_gba, ".gba")]
             )
             if path_save:
+                if not path_save.endswith(".gba"):
+                    path_save = path_save + ".gba"
                 argoptions["output"] = path_save
-                steps = len(game_list) + 1
                 msg, err = [], []
                 for result in MenuBuilder.build_start(options, argoptions, game_list):
                     if result.success:
