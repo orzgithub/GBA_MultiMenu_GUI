@@ -11,6 +11,7 @@ from rom_builder import rom_builder
 
 
 def build_start(options: dict, argoptions: dict, gamelist: list):
+    rom_out_dir = "game_patched"
     if os.path.isdir("./sram_ips"):
         ips_game_list = os.listdir("./sram_ips")
         for i in range(0, len(ips_game_list)):
@@ -19,15 +20,15 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         ips_game_list = list()
     emu_game_list = ["GMBC", "PNES"]
     game_json_file = list()
-    if os.path.exists("./game_patched"):
-        shutil.rmtree("./game_patched")
-    os.makedirs("./game_patched")
+    if os.path.exists(f"./{rom_out_dir}"):
+        shutil.rmtree(f"./{rom_out_dir}")
+    os.makedirs(f"./{rom_out_dir}")
     for game in gamelist:
         file_name_full: str = os.path.basename(game["path"])
         file_name: str = os.path.splitext(file_name_full)[0]
         file_type: str = os.path.splitext(file_name_full)[1]
         game_json_elem: dict = dict()
-        out_file = "./game_patched/" + file_name + ".gba"
+        out_file = f"./{rom_out_dir}/" + file_name + ".gba"
         match file_type.lower():
             case ".gba":
                 if (
@@ -98,7 +99,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
     build_config["no-wait"] = True
     build_config["no-log"] = True
     build_config["config"] = "builder.json"
-    build_config["rom-base-path"] = "game_patched"
+    build_config["rom-base-path"] = rom_out_dir
     if "bg" in argoptions.keys():
         build_config["bg"] = argoptions["bg"]
     if "split" in argoptions.keys():

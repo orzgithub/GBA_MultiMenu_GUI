@@ -128,8 +128,11 @@ class MenuBuilderGUI(tkinter.Tk):
                         not entry_gba_name.get()
                         and os.path.splitext(selected_file_path)[1] == ".gba"
                     ):
-                        entry_gba_name.insert(
+                        """entry_gba_name.insert(
                             0, HeaderReader.get_name(selected_file_path)
+                        )"""
+                        entry_gba_name.insert(
+                            0, os.path.splitext(os.path.basename(selected_file_path))[0]
                         )
 
             button_gba_path = tkinter.ttk.Button(
