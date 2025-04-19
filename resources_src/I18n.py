@@ -122,7 +122,8 @@ class zh_CN(lang_base):
         "出错的游戏已跳过\n"
         "错误日志已保存为%file_name\n"
         "建议将日志和游戏ROM在Github项目中提交issue\n"
-        "如果你认为那不是你的错的话"
+        "如果你认为那不是你的错的话\n"
+        "点击确定以打开日志文件"
     )
     error_image_size_not_allowed: str = "图片尺寸不符，无法作为菜单背景。 \n" "请选择一个240*160的png图片。"
 
@@ -184,7 +185,8 @@ class en_US(lang_base):
         "games with error are skipped\n"
         "error log is saved as %file_name\n"
         "it's suggested to make an issue on github\n"
-        "if you think that's not your fault"
+        "if you think that's not your fault\n"
+        "press ok to open the log"
     )
     error_image_size_not_allowed: str = (
         "Size of the image is wrong. \n" "Please use a 240*160 pixel image."

@@ -3,6 +3,7 @@
 import datetime
 import json
 import os.path
+import subprocess
 import tkinter
 import tkinter.messagebox
 import tkinter.filedialog
@@ -456,11 +457,17 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                     log_file_name = f"error-{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log"
                     with open(log_file_name, "w") as log:
                         json.dump(error_log, log, indent=2, ensure_ascii=False)
-                    tkinter.messagebox.showinfo(
+                    if tkinter.messagebox.askyesno(
                         message=app_lang.info_build_done_with_error.replace(
                             "%file_name", log_file_name
-                        )
-                    )
+                        ),
+                    ):
+                        if platform.system() == "Windows":
+                            os.startfile(log_file_name)
+                        elif platform.system() == "Darwin":
+                            subprocess.call(["open", log_file_name])
+                        else:
+                            subprocess.call(["xdg-open", log_file_name])
 
         button_lk_build = tkinter.ttk.Button(
             frame_rom_gen, text=app_lang.button_lk_build, command=start_build
