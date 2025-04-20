@@ -133,7 +133,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         }
         game_json_file.append(game_json_elem)
     fin_json = {"cartridge": options, "games": game_json_file}
-    json_file = open("./builder.json", "w")
+    json_file = open("./builder.json", "w", encoding="UTF-8-SIG")
     json_file.write(json.dumps(obj=fin_json, indent=4, ensure_ascii=False))
     json_file.close()
 
@@ -153,7 +153,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
         dataclasses.asdict(build_config)
     )
     if build_result.success:
-        if not build_result.msg:
+        if not build_result.data:
             yield BuildInfo(
                 build_config.output, "multimenu build", "Multimenu build success.", True
             )
