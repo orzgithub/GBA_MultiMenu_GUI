@@ -34,8 +34,7 @@ cp gba_patch$(python3-config --extension-suffix) ../lib
 cd ..
 ```
 
-You can also build it on windows but it's impossible to built with msvc without some works on batteryless patcher. So
-use msys2 toolchains instead.
+You can also build it on windows with msvc or gcc or clang.
 
 This application also works for pypy and may other implements of python. But by default cmake would build it with
 cpython so you may need to make some changes on CMakeLists.txt.
