@@ -9,6 +9,7 @@ import tkinter.messagebox
 import tkinter.filedialog
 import tkinter.ttk
 import tkinter.font
+import typing
 import webbrowser
 
 from PIL import ImageTk, Image
@@ -49,7 +50,7 @@ class MenuBuilderGUI(tkinter.Tk):
                                     "defaults read -g AppleInterfaceStyle", shell=True
                                 )
                             except:
-                                dark_mode = False
+                                pass
                         case "Windows":
                             try:
                                 import winreg
@@ -64,7 +65,7 @@ class MenuBuilderGUI(tkinter.Tk):
                                 winreg.CloseKey(key)
                                 dark_mode = value == 0
                             except:
-                                dark_mode = False
+                                pass
                     if dark_mode:
                         sv_ttk.set_theme("dark", self)
                     else:
@@ -93,7 +94,10 @@ class MenuBuilderGUI(tkinter.Tk):
         self.title(app_lang.window_title)
         self.resizable(False, False)
 
-        gba_struct: dict = {"path": "", "name": "", "save_slot": 0}
+        class GbaStruct(typing.TypedDict):
+            path: str
+            name: str
+            save_slot: int | None
 
         global max_slot
         max_slot = 1
@@ -161,13 +165,14 @@ class MenuBuilderGUI(tkinter.Tk):
             entry_save_slot.grid(row=2, column=1, padx=5, pady=5, sticky=tkinter.W)
 
             def finish_add_rom():
-                gba_ret = gba_struct.copy()
-                gba_ret["path"] = entry_gba_path.get()
-                gba_ret["name"] = entry_gba_name.get()
-                gba_ret["save_slot"] = (
-                    None
-                    if entry_save_slot.get() == "None"
-                    else int(entry_save_slot.get())
+                gba_ret = GbaStruct(
+                    path=entry_gba_path.get(),
+                    name=entry_gba_name.get(),
+                    save_slot=(
+                        None
+                        if entry_save_slot.get() == "None"
+                        else int(entry_save_slot.get())
+                    ),
                 )
                 add_game(gba_ret)
                 global max_slot
@@ -407,10 +412,13 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             game_list_children = table_game_list.get_children()
             game_list = list()
             for child in game_list_children:
-                game_list_elem = gba_struct.copy()
-                game_list_elem["name"] = table_game_list.item(child)["values"][0]
-                game_list_elem["path"] = table_game_list.item(child)["values"][1]
                 save_slot = table_game_list.item(child)["values"][2]
+                game_list_elem = GbaStruct(
+                    name=table_game_list.item(child)["values"][0],
+                    path=table_game_list.item(child)["values"][1],
+                    save_slot=(None if save_slot == "None" else int(save_slot)),
+                )
+
                 game_list_elem["save_slot"] = (
                     None if save_slot == "None" else int(save_slot)
                 )
