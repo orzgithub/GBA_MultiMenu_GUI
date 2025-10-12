@@ -9,6 +9,7 @@ from . import Patcher
 from . import HeaderReader
 from . import EmulatorBuilder
 from rom_builder import rom_builder
+from .CheckSaveType import check_save_type
 
 
 class BuildInfo(typing.NamedTuple):
@@ -64,7 +65,10 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                 ):  # Skip game patch if it's emulator.
                     shutil.copy(game["path"], out_file)
                 else:
-                    if Patcher.sram_patcher(game["path"], out_file) == 1:
+                    save_type = check_save_type(game["path"])
+                    if save_type in ['none', 'sram']:
+                        shutil.copy(game["path"], out_file)
+                    elif Patcher.sram_patcher(game["path"], out_file) == 1:
                         yield BuildInfo(
                             file_name_full, "SRAM patch", "SRAM patch failed.", False
                         )
