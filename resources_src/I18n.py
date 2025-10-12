@@ -48,8 +48,10 @@ class lang_base(ABC):
         "6600M0U0BE",
         "MSP54LV100",
         "F0095H0",
+        "S29GL01G or MT28EW01G",
+        "S70GL02G",
     ]
-    text_cart_min_size_list: dict[str, int] = {"4 MB": 4194304, "512 KB": 524288}
+    text_cart_min_size_list: dict[str, int] = {"4 MB": 4194304, "512 KB": 524288, "8 MB": 4194304}
     text_about_title: str
     text_about_url: str = "https://github.com/orzgithub/GBA_MultiMenu_GUI"
     text_about_version: str = "Beta 0.2"

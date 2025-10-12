@@ -85,6 +85,18 @@ def build(args_set: dict = None) -> FuncModeRet | int:
             "sector_size": 0x40000,
             "block_size": 0x80000,
         },
+    {
+        "name": "S29GL01G or MT28EW01G",
+        "flash_size": 0x8000000,
+        "sector_size": 0x20000,
+        "block_size": 0x80000,
+    },
+    {
+        "name": "S70GL02G",
+        "flash_size": 0x10000000,
+        "sector_size": 0x20000,
+        "block_size": 0x80000,
+    },
     ]
     now = datetime.datetime.now()
 

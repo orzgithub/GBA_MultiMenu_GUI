@@ -3,7 +3,7 @@
 This is a menu program to be run on Game Boy Advance bootleg cartridges which are equipped with a special multi-game
 mapper.
 
-Designed to work with lesserkuma's GBA Multi Game Menu.
+Designed to work with the fork version of lesserkuma's GBA Multi Game Menu maintained by ZaindORp. Maybe it can also work with the original project, but the new cartridge type cannot be used.
 
 This application can patch the game with SRAM patch and batteryless patch automatically so no extra operation needed
 now. Just select the original ROM (Patched ROMs are ok. In most cases it won't be patched again.) in the GUI and
@@ -49,7 +49,7 @@ automatically if you run it directly or packed by pyinstaller.
 
 ## Thanks
 
-[GBA Multi Game Menu](https://github.com/lesserkuma/GBA_MultiMenu) By [lesserkuma](https://github.com/lesserkuma)
+[GBA Multi Game Menu](https://github.com/lesserkuma/GBA_MultiMenu) By [lesserkuma](https://github.com/lesserkuma) and [it's fork](https://github.com/orzgithub/GBA_MultiMenu_extended) by [ZaindORp](https://github.com/orzgithub)
 
 Used to build the menu.
 
