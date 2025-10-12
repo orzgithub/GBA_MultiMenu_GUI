@@ -155,7 +155,7 @@ int patch(char *rom_path, char *out_path)
 		if (romsize + 0x80000 > 0x2000000)
 		{
 			puts("ROM alraedy max size. Cannot expand. Cannot install payload");
-			return 0;
+			return 1;
 		}
 		else
 		{
