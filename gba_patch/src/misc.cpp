@@ -67,7 +67,7 @@ bool process_rom(const std::string & input_file, const std::string & output_file
 		if (opts.patch_sram) {
 			try {
 				std::cout << "Patching save type to SRAM." << std::endl;
-				patch_sram(rom_data);
+				patch_sram(rom_data, opts.sram_bank_type);
 			} catch (MalformedDataException &e) {
 				std::cerr << "Error during SRAM patching: " << e.error() << std::endl;
 				success = false;

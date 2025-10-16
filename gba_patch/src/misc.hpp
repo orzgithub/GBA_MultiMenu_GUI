@@ -13,6 +13,7 @@ typedef struct Options_struct {
 	bool trim = false;
 	bool in_place = false;
 	bool dummy_save = false;
+	unsigned char sram_bank_type = 0;
 } Options;
 
 

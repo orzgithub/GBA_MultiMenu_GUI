@@ -72,3 +72,7 @@ Used to pack gb and gbc roms.
 and [it's fork](https://github.com/lesserkuma/PocketNES) By [lesserkuma](https://github.com/lesserkuma)
 
 Used to pack nes roms.
+
+[Flash1M_Repro_SRAM_Patcher](https://github.com/bbsan2k/Flash1M_Repro_SRAM_Patcher) By [bbsan2k](https://github.com/bbsan2k)
+
+The patches used to support 1M SRAM bank switch were ported from here.
