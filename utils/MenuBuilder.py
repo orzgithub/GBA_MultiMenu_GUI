@@ -68,7 +68,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     save_type = check_save_type(game["path"])
                     if save_type in ['none', 'sram']:
                         shutil.copy(game["path"], out_file)
-                    elif Patcher.sram_patcher(game["path"], out_file) == 1:
+                    elif Patcher.sram_patcher_bank(game["path"], out_file, argoptions["sram_bank_type"]) == 1:
                         yield BuildInfo(
                             file_name_full, "SRAM patch", "SRAM patch failed.", False
                         )

@@ -16,7 +16,7 @@ from PIL import ImageTk, Image
 import ctypes
 import base64
 import platform
-from utils import HeaderReader, MenuBuilder
+from utils import MenuBuilder
 from resources_src import Resource, I18n, Config
 
 import sv_ttk
@@ -371,6 +371,16 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         )
         check_cartridge_split.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
 
+        label_sram_bank = tkinter.ttk.Label(
+            frame_settings, text=app_lang.text_sram_bank
+        )
+        label_sram_bank.grid(row=3, column=0, padx=5, pady=5)
+        check_sram_bank_stat = tkinter.BooleanVar()
+        check_sram_bank = tkinter.ttk.Checkbutton(
+            frame_settings, variable=check_sram_bank_stat
+        )
+        check_sram_bank.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
+
         frame_settings.pack(padx=5, pady=5)
 
         ## label for background image
@@ -434,6 +444,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             }
             argoptions = {}
             argoptions["split"] = check_cartridge_split_stat.get()
+            argoptions["sram_bank_type"] = 1 if check_sram_bank_stat.get() else 0
             if bg_path != "":
                 argoptions["bg"] = bg_path
             path_save = tkinter.filedialog.asksaveasfilename(
