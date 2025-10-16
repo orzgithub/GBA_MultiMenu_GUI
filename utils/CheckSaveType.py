@@ -12,10 +12,10 @@ def check_save_type(rom_path: str):
         with open(rom_path, "rb") as f:
             rom_data = f.read()
 
-        rom_view = memoryview(rom_data)
+        # rom_view = memoryview(rom_data) # Why? It worked days ago. But today after looking into the document it doesn't have a find method.
 
         for pattern, save_type in PATTERNS:
-            if rom_view.find(pattern) != -1:
+            if rom_data.find(pattern) != -1:
                 return save_type
 
         return "none"
