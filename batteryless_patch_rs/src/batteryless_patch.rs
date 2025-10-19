@@ -62,7 +62,7 @@ fn memfind(haystack: &[u8], needle: &[u8], stride: usize) -> Option<usize> {
         .map(|pos| pos)
 }
 
-pub fn patch_rom(rom_path: &str, out_path: &str) -> Result<(), Box<dyn Error>> {
+pub fn patch_rom(rom_path: &str, out_path: &str, auto_mode: bool) -> Result<(), Box<dyn Error>> {
     let mut rom = vec![0xFF; ROM_SIZE];
 
     // Open and read ROM file
@@ -148,7 +148,7 @@ pub fn patch_rom(rom_path: &str, out_path: &str) -> Result<(), Box<dyn Error>> {
 
     rom[payload_base..payload_base + payload_len].copy_from_slice(&PAYLOAD_BIN);
 
-    let mode: u32 = 0;
+    let mode: u32 = if auto_mode { 0 } else { 1 };
     let flush_mode_offset = payload_base + mem::size_of::<u32>() * PayloadOffsets::FlushMode as usize;
     rom[flush_mode_offset..flush_mode_offset + 4].copy_from_slice(&mode.to_le_bytes());
 

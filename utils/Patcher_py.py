@@ -5,9 +5,9 @@ from batteryless_patch_py.batteryless_patch import patch as batteryless_patch
 
 
 def batteryless_patcher(
-    rom_path: str, out_path: str
+    rom_path: str, out_path: str, auto_mode: bool
 ) -> int:  # 0: Done 1: Failed but ok 2: Failed and broken
-    return batteryless_patch(rom_path, out_path)
+    return batteryless_patch(rom_path, out_path, auto_mode)
 
 
 def ips_patcher(

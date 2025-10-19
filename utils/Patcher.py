@@ -7,12 +7,13 @@ import locale
 
 
 def batteryless_patcher(
-    rom_path: str, out_path: str
+    rom_path: str, out_path: str, auto_mode: bool
 ) -> int:  # 0: Done 1: Failed but ok 2: Failed and broken
     print(end="")  # To make the patch result show in terminal at once.
     return batteryless_patch.patch(
         rom_path.encode(locale.getpreferredencoding()),
         out_path.encode(locale.getpreferredencoding()),
+        auto_mode,
     )
 
 

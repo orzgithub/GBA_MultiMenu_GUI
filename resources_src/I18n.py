@@ -44,6 +44,8 @@ class lang_base(ABC):
     text_cart_split: str
     text_cart_min_size: str
     text_sram_bank: str
+    text_use_rts: str
+    text_batteryless_autosave: str
     text_cart_type_list: list[str] = [
         "MSP55LV100S or S29GL512",
         "6600M0U0BE",
@@ -105,6 +107,8 @@ class zh_CN(lang_base):
     text_cart_split: str = "分割ROM"
     text_cart_min_size: str = "卡带最小ROM大小"
     text_sram_bank: str = "SRAM 1M存档支持"
+    text_use_rts: str = "使用即时存档"
+    text_batteryless_autosave: str = "无电池存档自动存档"
     text_about_title: str = "LK合卡菜单生成"
     table_rom_headings: dict[str, str] = {
         "name": "名称",
@@ -167,6 +171,8 @@ class en_US(lang_base):
     text_cart_split: str = "Split ROM"
     text_cart_min_size: str = "Minimial ROM size"
     text_sram_bank: str = "SRAM 1M save support"
+    text_use_rts: str = "Use RTS"
+    text_batteryless_autosave: str = "Batteryless save auto save"
     text_about_title: str = "LK Muiltmenu builder"
     table_rom_headings: dict[str, str] = {
         "name": "Name",

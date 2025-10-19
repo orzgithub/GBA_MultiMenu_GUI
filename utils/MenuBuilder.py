@@ -82,7 +82,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     and game["save_slot"] is not None
                     and HeaderReader.get_id(game["path"]) not in emu_game_list
                 ):
-                    if Patcher.batteryless_patcher(out_file, out_file) == 2:
+                    if Patcher.batteryless_patcher(out_file, out_file, argoptions["batteryless_autosave"]) == 2:
                         yield BuildInfo(
                             file_name_full,
                             "batteryless patch",
@@ -97,6 +97,8 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                             "Batteryless patch succeed.",
                             True,
                         )
+                elif argoptions["use_rts"]:
+                    pass # TODO: port RTS patch to this tool
             case ".gb" | ".gbc":
                 if not options["battery_present"] and game["save_slot"] is not None:
                     EmulatorBuilder.build_goomba(

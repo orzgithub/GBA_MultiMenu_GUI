@@ -18,7 +18,7 @@ mod batteryless_patch;
 ///     IOError: If file operations fail
 ///     ValueError: If ROM is invalid or already patched
 #[pyfunction]
-fn patch(py: Python, rom_path: String, out_path: String) -> PyResult<()> {
+fn patch(py: Python, rom_path: String, out_path: String, auto_mode: bool) -> PyResult<()> {
     // Validate paths
     if !Path::new(&rom_path).exists() {
         return Err(PyIOError::new_err("Input ROM file does not exist"));
@@ -31,7 +31,7 @@ fn patch(py: Python, rom_path: String, out_path: String) -> PyResult<()> {
     }
 
     py.allow_threads(|| {
-        batteryless_patch::patch_rom(&rom_path, &out_path)
+        batteryless_patch::patch_rom(&rom_path, &out_path, auto_mode)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     })
 }

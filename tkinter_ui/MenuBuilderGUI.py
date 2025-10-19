@@ -353,7 +353,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             frame_settings, text=app_lang.text_cart_battery_type
         )
         label_cartridge_battery_type.grid(row=2, column=0, padx=5, pady=5)
-        check_cartridge_battery_type_stat = tkinter.BooleanVar()
+        check_cartridge_battery_type_stat = tkinter.BooleanVar(value=True)
         check_cartridge_battery_type = tkinter.ttk.Checkbutton(
             frame_settings, variable=check_cartridge_battery_type_stat
         )
@@ -361,25 +361,55 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             row=2, column=1, padx=5, pady=5, sticky=tkinter.W
         )
 
+        label_use_rts = tkinter.ttk.Label(
+            frame_settings, text=app_lang.text_use_rts
+        )
+        check_use_rts_stat = tkinter.BooleanVar(value=False)
+        check_use_rts = tkinter.ttk.Checkbutton(
+            frame_settings, variable=check_use_rts_stat
+        )
+
+        label_batteryless_autosave = tkinter.ttk.Label(frame_settings, text=app_lang.text_batteryless_autosave)
+        check_batteryless_autosave_stat = tkinter.BooleanVar(value=True)
+        check_batteryless_autosave = tkinter.ttk.Checkbutton(
+            frame_settings, variable=check_batteryless_autosave_stat
+        )
+
+        def toggle_use_rts_visibility():
+            if check_cartridge_battery_type_stat.get():
+                label_batteryless_autosave.grid_remove()
+                check_batteryless_autosave.grid_remove()
+                label_use_rts.grid(row=3, column=0, padx=5, pady=5)
+                check_use_rts.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
+            else:
+                label_use_rts.grid_remove()
+                check_use_rts.grid_remove()
+                label_batteryless_autosave.grid(row=3, column=0, padx=5, pady=5)
+                check_batteryless_autosave.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
+
+        toggle_use_rts_visibility()
+
+        check_cartridge_battery_type.config(command=toggle_use_rts_visibility)
+
         label_cartridge_split = tkinter.ttk.Label(
             frame_settings, text=app_lang.text_cart_split
         )
-        label_cartridge_split.grid(row=3, column=0, padx=5, pady=5)
-        check_cartridge_split_stat = tkinter.BooleanVar()
+        label_cartridge_split.grid(row=4, column=0, padx=5, pady=5)
+        check_cartridge_split_stat = tkinter.BooleanVar(value=False)
         check_cartridge_split = tkinter.ttk.Checkbutton(
             frame_settings, variable=check_cartridge_split_stat
         )
-        check_cartridge_split.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
+        check_cartridge_split.grid(row=4, column=1, padx=5, pady=5, sticky=tkinter.W)
 
         label_sram_bank = tkinter.ttk.Label(
             frame_settings, text=app_lang.text_sram_bank
         )
-        label_sram_bank.grid(row=3, column=0, padx=5, pady=5)
-        check_sram_bank_stat = tkinter.BooleanVar()
+        label_sram_bank.grid(row=5, column=0, padx=5, pady=5)
+        check_sram_bank_stat = tkinter.BooleanVar(value=False)
         check_sram_bank = tkinter.ttk.Checkbutton(
             frame_settings, variable=check_sram_bank_stat
         )
-        check_sram_bank.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
+        check_sram_bank.grid(row=5, column=1, padx=5, pady=5, sticky=tkinter.W)
 
         frame_settings.pack(padx=5, pady=5)
 
@@ -445,6 +475,8 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             argoptions = {}
             argoptions["split"] = check_cartridge_split_stat.get()
             argoptions["sram_bank_type"] = 1 if check_sram_bank_stat.get() else 0
+            argoptions["use_rts"] = check_use_rts_stat.get()
+            argoptions["batteryless_autosave"] = check_batteryless_autosave_stat.get()
             if bg_path != "":
                 argoptions["bg"] = bg_path
             path_save = tkinter.filedialog.asksaveasfilename(

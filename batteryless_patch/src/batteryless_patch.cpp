@@ -61,7 +61,7 @@ static uint8_t *memfind(uint8_t *haystack, size_t haystack_size, uint8_t *needle
     return NULL;
 }
 
-int patch(char *rom_path, char *out_path)
+int patch(char *rom_path, char *out_path, bool auto_mode)
 {
 	memset(rom, 0x00ff, sizeof rom);
     
@@ -168,7 +168,7 @@ int patch(char *rom_path, char *out_path)
 	printf("Installing payload at offset %x, save file stored at %x\n", payload_base, payload_base + payload_bin_len);
 	memcpy(rom + payload_base, payload_bin, payload_bin_len);
 
-    int mode = 0;
+    int mode = auto_mode ? 0 : 1;
     *((uint32_t*)&rom[payload_base] + FLUSH_MODE) = mode;
     
 
@@ -324,5 +324,5 @@ int patch(char *rom_path, char *out_path)
 }
 
 PYBIND11_MODULE(batteryless_patch, m) {
-    m.def("patch", &patch, py::arg("rom_path"), py::arg("out_path"));
+    m.def("patch", &patch, py::arg("rom_path"), py::arg("out_path"), py::arg("auto_mode"));
 }

@@ -192,7 +192,7 @@ def memfind(haystack, needle, stride=4):
     return None
 
 
-def patch(rom_path, out_path):
+def patch(rom_path: str, out_path: str, auto_mode: bool):
     """Main patch function"""
     if not rom_path.lower().endswith(".gba"):
         print("File does not have .gba extension.")
@@ -272,7 +272,7 @@ def patch(rom_path, out_path):
     rom[payload_base : payload_base + len(payload_bin)] = payload_bin
 
     # Set flush mode
-    mode = 0
+    mode = 0 if auto_mode else 1;
     struct.pack_into("<I", rom, payload_base + FLUSH_MODE * 4, mode)
 
     # Patch ROM entrypoint
