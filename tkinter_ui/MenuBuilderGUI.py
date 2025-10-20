@@ -21,6 +21,8 @@ from resources_src import Resource, I18n, Config
 
 import sv_ttk
 
+from rom_builder.cartridge_config import cartridge_types
+
 # These code are really poor quality.
 # Maybe it would be rebuilt one day.
 # Or maybe never.
@@ -332,7 +334,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         )
         label_cartridge_type.grid(row=0, column=0, padx=5, pady=5)
         combo_cartridge_type = tkinter.ttk.Combobox(
-            frame_settings, values=app_lang.text_cart_type_list
+            frame_settings, values=list(cart['name'] for cart in cartridge_types)
         )
         combo_cartridge_type.current(0)
         combo_cartridge_type.grid(row=0, column=1, padx=5, pady=5, sticky=tkinter.W)

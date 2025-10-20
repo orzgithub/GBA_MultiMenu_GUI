@@ -46,13 +46,6 @@ class lang_base(ABC):
     text_sram_bank: str
     text_use_rts: str
     text_batteryless_autosave: str
-    text_cart_type_list: list[str] = [
-        "MSP55LV100S or S29GL512",
-        "6600M0U0BE",
-        "MSP54LV100 or S29GL01G",
-        "F0095H0",
-        "S70GL02G",
-    ]
     text_cart_min_size_list: dict[str, int] = {"4 MB": 4194304, "512 KB": 524288, "8 MB": 4194304}
     text_about_title: str
     text_about_url: str = "https://github.com/orzgithub/GBA_MultiMenu_GUI"
