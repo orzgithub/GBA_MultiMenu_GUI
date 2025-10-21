@@ -5,7 +5,7 @@ import os
 import shutil
 import typing
 
-from . import Patcher
+from .Patcher import sram_patcher_bank, ips_patcher, batteryless_patcher
 from . import HeaderReader
 from . import EmulatorBuilder
 from rom_builder import rom_builder
@@ -44,7 +44,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     HeaderReader.get_id(game["path"]) in ips_game_list
                 ):  # Some games can't be patched with the normal SRAM patch so use special ips patches for them.
                     if (
-                        Patcher.ips_patcher(
+                        ips_patcher(
                             game["path"],
                             "./sram_ips/" + HeaderReader.get_id(game["path"]) + ".ips",
                             out_file,
@@ -68,7 +68,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     save_type = check_save_type(game["path"])
                     if save_type in ['none', 'sram']:
                         shutil.copy(game["path"], out_file)
-                    elif Patcher.sram_patcher_bank(game["path"], out_file, argoptions["sram_bank_type"]) == 1:
+                    elif sram_patcher_bank(game["path"], out_file, argoptions["sram_bank_type"]) == 1:
                         yield BuildInfo(
                             file_name_full, "SRAM patch", "SRAM patch failed.", False
                         )
@@ -82,7 +82,7 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     and game["save_slot"] is not None
                     and HeaderReader.get_id(game["path"]) not in emu_game_list
                 ):
-                    if Patcher.batteryless_patcher(out_file, out_file, argoptions["batteryless_autosave"]) == 2:
+                    if batteryless_patcher(out_file, out_file, argoptions["batteryless_autosave"]) == 2:
                         yield BuildInfo(
                             file_name_full,
                             "batteryless patch",
