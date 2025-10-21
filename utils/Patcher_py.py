@@ -2,6 +2,7 @@
 
 from gba_patch_py.patch import apply_ips_patch, patch_complement_check
 from batteryless_patch_py.batteryless_patch import patch as batteryless_patch
+from rts_patch_py.patcher import apply_patch as rts_patch
 
 
 def batteryless_patcher(
@@ -54,3 +55,17 @@ def ips_patcher(
         print(e)
         return 1
     return 0
+
+
+def rts_patcher(rom_path: str, out_path: str, wbuf_size: int = 0, sector_size=0x10000):
+    return (
+        0
+        if rts_patch(
+            rom_file=rom_path,
+            output_file=out_path,
+            interactive=False,
+            wbuf_size=wbuf_size,
+            sector_size=sector_size,
+        )[0]
+        else 1
+    )

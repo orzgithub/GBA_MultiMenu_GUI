@@ -6,9 +6,10 @@ import shutil
 import typing
 
 from .Patcher import sram_patcher_bank, ips_patcher, batteryless_patcher
+from .Patcher_py import rts_patcher
 from . import HeaderReader
 from . import EmulatorBuilder
-from rom_builder import rom_builder
+from rom_builder import rom_builder, cartridge_config
 from .CheckSaveType import check_save_type
 
 
@@ -66,9 +67,14 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     shutil.copy(game["path"], out_file)
                 else:
                     save_type = check_save_type(game["path"])
-                    if save_type in ['none', 'sram']:
+                    if save_type in ["none", "sram"]:
                         shutil.copy(game["path"], out_file)
-                    elif sram_patcher_bank(game["path"], out_file, argoptions["sram_bank_type"]) == 1:
+                    elif (
+                        sram_patcher_bank(
+                            game["path"], out_file, argoptions["sram_bank_type"]
+                        )
+                        == 1
+                    ):
                         yield BuildInfo(
                             file_name_full, "SRAM patch", "SRAM patch failed.", False
                         )
@@ -82,7 +88,12 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                     and game["save_slot"] is not None
                     and HeaderReader.get_id(game["path"]) not in emu_game_list
                 ):
-                    if batteryless_patcher(out_file, out_file, argoptions["batteryless_autosave"]) == 2:
+                    if (
+                        batteryless_patcher(
+                            out_file, out_file, argoptions["batteryless_autosave"]
+                        )
+                        == 2
+                    ):
                         yield BuildInfo(
                             file_name_full,
                             "batteryless patch",
@@ -98,7 +109,21 @@ def build_start(options: dict, argoptions: dict, gamelist: list):
                             True,
                         )
                 elif argoptions["use_rts"]:
-                    pass # TODO: port RTS patch to this tool
+                    if (
+                        rts_patcher(
+                            out_file,
+                            out_file,
+                            0,
+                            cartridge_config.cartridge_types[options["type"] - 1]["sector_size"],
+                        )
+                        == 1
+                    ):
+                        yield BuildInfo(
+                            file_name_full,
+                            "rts patch",
+                            "RTS patch failed.",
+                            False,
+                        )
             case ".gb" | ".gbc":
                 if not options["battery_present"] and game["save_slot"] is not None:
                     EmulatorBuilder.build_goomba(

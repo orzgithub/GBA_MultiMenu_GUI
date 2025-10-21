@@ -76,3 +76,7 @@ Used to pack nes roms.
 [Flash1M_Repro_SRAM_Patcher](https://github.com/bbsan2k/Flash1M_Repro_SRAM_Patcher) By [bbsan2k](https://github.com/bbsan2k)
 
 The patches used to support 1M SRAM bank switch were ported from here.
+
+[GBA-RTS-PATCH](https://github.com/ArcheyChen/GBA-RTS-PATCH) By [ArcheyChen](https://github.com/ArcheyChen)
+
+Used to provide RTS function. 
