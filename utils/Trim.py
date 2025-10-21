@@ -17,7 +17,7 @@ def trim(rom_path: str, out_path: str, align_size: int = 16):
         rom_data += (align_size - (len(rom_data) % align_size)) * b"\0"
     try:
         trim_data = rom_data[-align_size:]
-        assert trim_data in [align_size * b"\x00", align_size * b"\xFF"]
+        assert trim_data in [align_size * b"\x00", align_size * b"\xff"]
         cur_trim = len(rom_data) - align_size
         while rom_data[cur_trim : cur_trim + align_size] == trim_data:
             cur_trim -= align_size
