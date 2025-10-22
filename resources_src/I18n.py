@@ -39,6 +39,7 @@ class lang_base(ABC):
     text_filetype_gba: str
     text_filetype_gbc: str
     text_filetype_gb: str
+    text_filetype_nes: str
     text_cart_type: str
     text_cart_battery_type: str
     text_cart_split: str
