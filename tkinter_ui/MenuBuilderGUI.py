@@ -163,7 +163,7 @@ class MenuBuilderGUI(tkinter.Tk):
                 values=((None,) + tuple(range(1, max_slot + 1))),
                 increment=1,
             )
-            entry_save_slot.insert(0, "None")
+            entry_save_slot.set(max_slot)
             entry_save_slot.grid(row=2, column=1, padx=5, pady=5, sticky=tkinter.W)
 
             def finish_add_rom():
@@ -177,9 +177,6 @@ class MenuBuilderGUI(tkinter.Tk):
                     ),
                 )
                 add_game(gba_ret)
-                global max_slot
-                if gba_ret["save_slot"] == max_slot:
-                    max_slot += 1
                 window_add_rom.quit()
                 window_add_rom.destroy()
 
@@ -305,12 +302,17 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         table_game_list.pack(padx=5, pady=5)
 
         def delete_game():
+            global max_slot
             selection = table_game_list.selection()
             if selection:
                 for cselection in selection:
                     table_game_list.delete(cselection)
+            max_slot = max(filter(lambda i: i != "None", (table_game_list.item(item)["values"][2] for item in table_game_list.get_children())), default=0) + 1
 
         def add_game(game_info):
+            global max_slot
+            if game_info["save_slot"] == max_slot:
+                max_slot += 1
             table_game_list.insert(
                 "",
                 tkinter.END,
