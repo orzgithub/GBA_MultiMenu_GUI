@@ -20,6 +20,7 @@ from utils import MenuBuilder
 from resources_src import Resource, I18n, Config
 
 import sv_ttk
+import tkinterdnd2
 
 from rom_builder.cartridge_config import cartridge_types
 
@@ -28,7 +29,7 @@ from rom_builder.cartridge_config import cartridge_types
 # Or maybe never.
 
 
-class MenuBuilderGUI(tkinter.Tk):
+class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
     def __init__(self):
         super().__init__()
         global config
@@ -133,9 +134,9 @@ class MenuBuilderGUI(tkinter.Tk):
                 if selected_file_path:
                     entry_gba_path.delete(0, tkinter.END)
                     entry_gba_path.insert(0, selected_file_path)
-                    if (
-                        not entry_gba_name.get()
-                        and os.path.splitext(selected_file_path)[1] == ".gba"
+                    if not entry_gba_name.get() and (
+                        os.path.splitext(selected_file_path)[1]
+                        in [".gba", ".gbc", ".gb", ".nes"]
                     ):
                         """entry_gba_name.insert(
                             0, HeaderReader.get_name(selected_file_path)
@@ -348,6 +349,28 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 )
 
         table_game_list.bind("<Double-1>", table_game_list_edit)
+
+        def table_game_list_dnd_add(event):
+            path = event.data
+
+            def finish_add_rom(window_handler: tkinter.Toplevel, rom_info: GbaStruct):
+                add_game(rom_info)
+                window_handler.quit()
+                window_handler.destroy()
+
+            if os.path.splitext(path)[1] in [".gba", ".gbc", ".gb", ".nes"]:
+                impl_window_edit_rom(
+                    finish_add_rom,
+                    app_lang.window_title_add_rom,
+                    GbaStruct(
+                        name=os.path.splitext(os.path.basename(path))[0],
+                        path=path,
+                        save_slot=max_slot,
+                    ),
+                )
+
+        table_game_list.drop_target_register(tkinterdnd2.DND_FILES)
+        table_game_list.dnd_bind("<<Drop>>", table_game_list_dnd_add)
 
         def delete_game():
             global max_slot
