@@ -320,6 +320,35 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         )
         table_game_list.pack(padx=5, pady=5)
 
+        def table_game_list_edit(event):
+            selection = table_game_list.selection()
+            if selection:
+                edit_item = selection[
+                    0
+                ]  # Can only edit one item at the same time so use the first one
+
+                def finish_edit_rom(
+                    window_handler: tkinter.Toplevel, rom_info: GbaStruct
+                ):
+                    edit_game(rom_info, edit_item)
+                    window_handler.quit()
+                    window_handler.destroy()
+
+                edit_item_value = table_game_list.item(edit_item)["values"]
+                impl_window_edit_rom(
+                    finish_edit_rom,
+                    app_lang.window_title_edit_rom,
+                    GbaStruct(
+                        name=edit_item_value[0],
+                        path=edit_item_value[1],
+                        save_slot=(
+                            "None" if edit_item_value[2] is None else edit_item_value[2]
+                        ),
+                    ),
+                )
+
+        table_game_list.bind("<Double-1>", table_game_list_edit)
+
         def delete_game():
             global max_slot
             selection = table_game_list.selection()
@@ -340,7 +369,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 + 1
             )
 
-        def add_game(game_info):
+        def add_game(game_info: GbaStruct):
             global max_slot
             if game_info["save_slot"] == max_slot:
                 max_slot += 1
@@ -348,6 +377,26 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 "",
                 tkinter.END,
                 values=[game_info["name"], game_info["path"], game_info["save_slot"]],
+            )
+
+        def edit_game(game_info: GbaStruct, id: str):
+            global max_slot
+            table_game_list.item(
+                id,
+                values=[game_info["name"], game_info["path"], game_info["save_slot"]],
+            )
+            max_slot = (
+                max(
+                    filter(
+                        lambda i: i != "None",
+                        (
+                            table_game_list.item(item)["values"][2]
+                            for item in table_game_list.get_children()
+                        ),
+                    ),
+                    default=0,
+                )
+                + 1
             )
 
         button_game_delete = tkinter.ttk.Button(
@@ -420,7 +469,9 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 label_use_rts.grid_remove()
                 check_use_rts.grid_remove()
                 label_batteryless_autosave.grid(row=3, column=0, padx=5, pady=5)
-                check_batteryless_autosave.grid(row=3, column=1, padx=5, pady=5, sticky=tkinter.W)
+                check_batteryless_autosave.grid(
+                    row=3, column=1, padx=5, pady=5, sticky=tkinter.W
+                )
 
         toggle_use_rts_visibility()
 

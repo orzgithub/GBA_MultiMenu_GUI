@@ -16,6 +16,7 @@ class lang_base(ABC):
     done: str
     window_title: str
     window_title_add_rom: str
+    window_title_edit_rom: str
     menu_add_game: str
     menu_lang_set: str
     menu_about: str
@@ -72,6 +73,7 @@ class zh_CN(lang_base):
     done: str = "完成"
     window_title: str = "LK合卡菜单制作GUI"
     window_title_add_rom: str = "添加ROM"
+    window_title_edit_rom: str = "编辑ROM"
     menu_add_game: str = "添加"
     menu_lang_set: str = "语言"
     menu_about: str = "关于"
@@ -136,6 +138,7 @@ class en_US(lang_base):
     done: str = "Done"
     window_title: str = "LK multirom menu builder GUI"
     window_title_add_rom: str = "Add a ROM"
+    window_title_edit_rom: str = "Edit a ROM"
     menu_add_game: str = "Add"
     menu_lang_set: str = "Language"
     menu_about: str = "About"
