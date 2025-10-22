@@ -104,23 +104,25 @@ class MenuBuilderGUI(tkinter.Tk):
         global max_slot
         max_slot = 1
 
-        def show_window_add_rom():
+        def impl_window_edit_rom(
+            ret_handler, title: str, rom_config: GbaStruct | None = None
+        ):
             # Rom Add Window
-            window_add_rom = tkinter.Toplevel(self)
-            window_add_rom.title(app_lang.window_title_add_rom)
-            window_add_rom.resizable(False, False)
-            frame_add_rom = tkinter.ttk.Frame(window_add_rom)
-            frame_add_rom.pack(padx=10, pady=10)
+            window_edit_rom = tkinter.Toplevel(self)
+            window_edit_rom.title(title)
+            window_edit_rom.resizable(False, False)
+            frame_edit_rom = tkinter.ttk.Frame(window_edit_rom)
+            frame_edit_rom.pack(padx=10, pady=10)
             label_gba_path = tkinter.ttk.Label(
-                frame_add_rom, text=app_lang.text_gba_path
+                frame_edit_rom, text=app_lang.text_gba_path
             )
             label_gba_path.grid(row=0, column=0, padx=5, pady=5)
-            entry_gba_path = tkinter.ttk.Entry(frame_add_rom)
+            entry_gba_path = tkinter.ttk.Entry(frame_edit_rom)
             entry_gba_path.grid(row=0, column=1, padx=5, pady=5, sticky=tkinter.W)
 
             def select_menu_bg():
                 selected_file_path = tkinter.filedialog.askopenfilename(
-                    parent=window_add_rom,
+                    parent=window_edit_rom,
                     filetypes=[
                         (app_lang.text_filetype_gba, ".gba"),
                         (app_lang.text_filetype_gbc, ".gbc"),
@@ -143,48 +145,65 @@ class MenuBuilderGUI(tkinter.Tk):
                         )
 
             button_gba_path = tkinter.ttk.Button(
-                frame_add_rom, text=app_lang.button_add_rom, command=select_menu_bg
+                frame_edit_rom, text=app_lang.button_add_rom, command=select_menu_bg
             )
             button_gba_path.grid(row=0, column=2, padx=5, pady=5)
 
             label_gba_name = tkinter.ttk.Label(
-                frame_add_rom, text=app_lang.text_gba_name
+                frame_edit_rom, text=app_lang.text_gba_name
             )
             label_gba_name.grid(row=1, column=0, padx=5, pady=5)
-            entry_gba_name = tkinter.ttk.Entry(frame_add_rom)
+            entry_gba_name = tkinter.ttk.Entry(frame_edit_rom)
             entry_gba_name.grid(row=1, column=1, padx=5, pady=5, sticky=tkinter.W)
 
             lable_save_slot = tkinter.ttk.Label(
-                frame_add_rom, text=app_lang.text_save_slot
+                frame_edit_rom, text=app_lang.text_save_slot
             )
             lable_save_slot.grid(row=2, column=0, padx=5, pady=5)
-            entry_save_slot = tkinter.ttk.Spinbox(
-                frame_add_rom,
-                values=((None,) + tuple(range(1, max_slot + 1))),
-                increment=1,
+            entry_save_slot = tkinter.ttk.Combobox(
+                frame_edit_rom,
+                values=(["None"] + [str(i) for i in range(1, max_slot + 1)]),
+                state="readonly",
             )
             entry_save_slot.set(max_slot)
             entry_save_slot.grid(row=2, column=1, padx=5, pady=5, sticky=tkinter.W)
 
-            def finish_add_rom():
-                gba_ret = GbaStruct(
-                    path=entry_gba_path.get(),
-                    name=entry_gba_name.get(),
-                    save_slot=(
-                        None
-                        if entry_save_slot.get() == "None"
-                        else int(entry_save_slot.get())
+            if rom_config != None:
+                entry_gba_name.insert(0, rom_config["name"])
+                entry_gba_path.insert(0, rom_config["path"])
+                entry_save_slot.set(
+                    "None"
+                    if rom_config["save_slot"] is None
+                    else rom_config["save_slot"]
+                )
+
+            def ret_handler_args():
+                ret_handler(
+                    window_edit_rom,
+                    GbaStruct(
+                        path=entry_gba_path.get(),
+                        name=entry_gba_name.get(),
+                        save_slot=(
+                            None
+                            if entry_save_slot.get() == "None"
+                            else int(entry_save_slot.get())
+                        ),
                     ),
                 )
-                add_game(gba_ret)
-                window_add_rom.quit()
-                window_add_rom.destroy()
 
             button_done = tkinter.ttk.Button(
-                frame_add_rom, text=app_lang.button_done, command=finish_add_rom
+                frame_edit_rom, text=app_lang.button_done, command=ret_handler_args
             )
             button_done.grid(row=3, column=1)
-            window_add_rom.mainloop()
+            window_edit_rom.mainloop()
+
+        def show_window_add_rom():
+            def finish_add_rom(window_handler: tkinter.Toplevel, rom_info: GbaStruct):
+                add_game(rom_info)
+                window_handler.quit()
+                window_handler.destroy()
+
+            impl_window_edit_rom(finish_add_rom, app_lang.window_title_add_rom, None)
 
         # Menu part
         menu = tkinter.Menu(self)
@@ -307,7 +326,19 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             if selection:
                 for cselection in selection:
                     table_game_list.delete(cselection)
-            max_slot = max(filter(lambda i: i != "None", (table_game_list.item(item)["values"][2] for item in table_game_list.get_children())), default=0) + 1
+            max_slot = (
+                max(
+                    filter(
+                        lambda i: i != "None",
+                        (
+                            table_game_list.item(item)["values"][2]
+                            for item in table_game_list.get_children()
+                        ),
+                    ),
+                    default=0,
+                )
+                + 1
+            )
 
         def add_game(game_info):
             global max_slot
@@ -336,7 +367,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         )
         label_cartridge_type.grid(row=0, column=0, padx=5, pady=5)
         combo_cartridge_type = tkinter.ttk.Combobox(
-            frame_settings, values=list(cart['name'] for cart in cartridge_types)
+            frame_settings, values=list(cart["name"] for cart in cartridge_types)
         )
         combo_cartridge_type.current(0)
         combo_cartridge_type.grid(row=0, column=1, padx=5, pady=5, sticky=tkinter.W)
@@ -365,15 +396,15 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
             row=2, column=1, padx=5, pady=5, sticky=tkinter.W
         )
 
-        label_use_rts = tkinter.ttk.Label(
-            frame_settings, text=app_lang.text_use_rts
-        )
+        label_use_rts = tkinter.ttk.Label(frame_settings, text=app_lang.text_use_rts)
         check_use_rts_stat = tkinter.BooleanVar(value=False)
         check_use_rts = tkinter.ttk.Checkbutton(
             frame_settings, variable=check_use_rts_stat
         )
 
-        label_batteryless_autosave = tkinter.ttk.Label(frame_settings, text=app_lang.text_batteryless_autosave)
+        label_batteryless_autosave = tkinter.ttk.Label(
+            frame_settings, text=app_lang.text_batteryless_autosave
+        )
         check_batteryless_autosave_stat = tkinter.BooleanVar(value=True)
         check_batteryless_autosave = tkinter.ttk.Checkbutton(
             frame_settings, variable=check_batteryless_autosave_stat
