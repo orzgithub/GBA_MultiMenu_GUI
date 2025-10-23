@@ -13,7 +13,7 @@ everything would be done.
 
 As this program is using C extensions you need to build these extensions to make it work.
 
-You need to have gcc or clang, cmake, devkitarm for gba, pybind11, python and boost installed.
+You need to have gcc or clang, cmake, devkitarm for gba, pybind11 and, of course, python installed.
 
 On linux or some simular *nix platforms you can execute the following commands:
 

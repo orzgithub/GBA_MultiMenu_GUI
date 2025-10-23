@@ -3,7 +3,6 @@
 
 #include <map>
 #include <vector>
-#include <boost/assign.hpp>
 
 namespace gba {
 	enum GbaHeaderField {
@@ -39,138 +38,143 @@ namespace gba {
 	};
 
 
-	const std::vector<SaveType> SAVE_TYPES = boost::assign::list_of
-		(FLASH_V120) (FLASH_V121) (FLASH_V123) (FLASH_V124) (FLASH_V125) (FLASH_V126)
-		(FLASH512_V130) (FLASH512_V131) (FLASH512_V133)
-		(FLASH1M_V102) (FLASH1M_V103)
-		(EEPROM_V111) (EEPROM_V120) (EEPROM_V121) (EEPROM_V122) (EEPROM_V124) (EEPROM_V126)
-		(SRAM_V110) (SRAM_V111) (SRAM_V112) (SRAM_V113)
-		(FRAM_V100) (FRAM_V102) (FRAM_V103) (FRAM_V110)
-		(NO_SAVE);
+	const std::vector<SaveType> SAVE_TYPES = {
+		FLASH_V120, FLASH_V121, FLASH_V123, FLASH_V124, FLASH_V125, FLASH_V126,
+		FLASH512_V130, FLASH512_V131, FLASH512_V133,
+		FLASH1M_V102, FLASH1M_V103,
+		EEPROM_V111, EEPROM_V120, EEPROM_V121, EEPROM_V122, EEPROM_V124, EEPROM_V126,
+		SRAM_V110, SRAM_V111, SRAM_V112, SRAM_V113,
+		FRAM_V100, FRAM_V102, FRAM_V103, FRAM_V110,
+		NO_SAVE
+	};
 
 
-	const std::map<GbaHeaderField, size_t> HEADER_FIELD_ADDRESSES = boost::assign::map_list_of
-		(ROM_ENTRY_POINT, 0x00000000)
-		(NINTENDO_LOGO, 0x00000004)
-		(DEBUG_ENABLE, 0x0000009C)
-		(GAME_TITLE, 0x000000A0)
-		(GAME_CODE, 0x000000AC)
-		(MAKER_CODE, 0x000000B0)
-		(FIXED_VALUE, 0x000000B2)
-		(MAIN_UNIT_CODE, 0x000000B3)
-		(DEVICE_TYPE, 0x000000B4)
-		(RESERVED_AREA_1, 0x000000B5)
-		(SOFTWARE_VERSION, 0x000000BC)
-		(COMPLEMENT_CHECK, 0x000000BD)
-		(RESERVED_AREA_2, 0x000000BE)
-		(MULTIBOOT_ENTRY_POINT, 0x000000C0)
-		(MULTIBOOT_BOOT_MODE, 0x000000C4)
-		(MULTIBOOT_SLAVE_ID_NUMBER, 0x000000C5)
-		(MULTIBOOT_UNUSED_SECTOR, 0x000000C6)
-		(MULTIBOOT_JOYBUS_ENTRY_POINT, 0x000000E0);
+	const std::map<GbaHeaderField, size_t> HEADER_FIELD_ADDRESSES = {
+		{ROM_ENTRY_POINT, 0x00000000},
+		{NINTENDO_LOGO, 0x00000004},
+		{DEBUG_ENABLE, 0x0000009C},
+		{GAME_TITLE, 0x000000A0},
+		{GAME_CODE, 0x000000AC},
+		{MAKER_CODE, 0x000000B0},
+		{FIXED_VALUE, 0x000000B2},
+		{MAIN_UNIT_CODE, 0x000000B3},
+		{DEVICE_TYPE, 0x000000B4},
+		{RESERVED_AREA_1, 0x000000B5},
+		{SOFTWARE_VERSION, 0x000000BC},
+		{COMPLEMENT_CHECK, 0x000000BD},
+		{RESERVED_AREA_2, 0x000000BE},
+		{MULTIBOOT_ENTRY_POINT, 0x000000C0},
+		{MULTIBOOT_BOOT_MODE, 0x000000C4},
+		{MULTIBOOT_SLAVE_ID_NUMBER, 0x000000C5},
+		{MULTIBOOT_UNUSED_SECTOR, 0x000000C6},
+		{MULTIBOOT_JOYBUS_ENTRY_POINT, 0x000000E0}
+	};
 
 
-	const std::map<GbaHeaderField, size_t> HEADER_FIELD_SIZES = boost::assign::map_list_of
+	const std::map<GbaHeaderField, size_t> HEADER_FIELD_SIZES = {
 		// Sizes are in bytes.
-		(ROM_ENTRY_POINT, 4)
-		(NINTENDO_LOGO, 156)
-		(DEBUG_ENABLE, 1)
-		(GAME_TITLE, 12)
-		(GAME_CODE, 4)
-		(MAKER_CODE, 1)
-		(FIXED_VALUE, 1)
-		(MAIN_UNIT_CODE, 1)
-		(DEVICE_TYPE, 1)
-		(RESERVED_AREA_1, 7)
-		(SOFTWARE_VERSION, 1)
-		(COMPLEMENT_CHECK, 1)
-		(RESERVED_AREA_2, 2)
-		(MULTIBOOT_ENTRY_POINT, 1)
-		(MULTIBOOT_BOOT_MODE, 1)
-		(MULTIBOOT_SLAVE_ID_NUMBER, 1)
-		(MULTIBOOT_UNUSED_SECTOR, 26)
-		(MULTIBOOT_JOYBUS_ENTRY_POINT, 1);
+		{ROM_ENTRY_POINT, 4},
+		{NINTENDO_LOGO, 156},
+		{DEBUG_ENABLE, 1},
+		{GAME_TITLE, 12},
+		{GAME_CODE, 4},
+		{MAKER_CODE, 1},
+		{FIXED_VALUE, 1},
+		{MAIN_UNIT_CODE, 1},
+		{DEVICE_TYPE, 1},
+		{RESERVED_AREA_1, 7},
+		{SOFTWARE_VERSION, 1},
+		{COMPLEMENT_CHECK, 1},
+		{RESERVED_AREA_2, 2},
+		{MULTIBOOT_ENTRY_POINT, 1},
+		{MULTIBOOT_BOOT_MODE, 1},
+		{MULTIBOOT_SLAVE_ID_NUMBER, 1},
+		{MULTIBOOT_UNUSED_SECTOR, 26},
+		{MULTIBOOT_JOYBUS_ENTRY_POINT, 1}
+	};
 
 
-	const std::map<SaveType, std::vector<unsigned char>> SAVE_TYPE_BYTE_PATTERNS = boost::assign::map_list_of
-		(FLASH_V120, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x5F) (0x56) (0x31) (0x32) (0x30).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V121, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x5F) (0x56) (0x31) (0x32) (0x31).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V123, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x5F) (0x56) (0x31) (0x32) (0x33).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V124, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x5F) (0x56) (0x31) (0x32) (0x34).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V125, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x5F) (0x56) (0x31) (0x32) (0x35).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V126, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x5F) (0x56) (0x31) (0x32) (0x36).convert_to_container<std::vector<unsigned char>>())
+	const std::map<SaveType, std::vector<unsigned char>> SAVE_TYPE_BYTE_PATTERNS = {
+		{FLASH_V120, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x5F, 0x56, 0x31, 0x32, 0x30}},
+		{FLASH_V121, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x5F, 0x56, 0x31, 0x32, 0x31}},
+		{FLASH_V123, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x5F, 0x56, 0x31, 0x32, 0x33}},
+		{FLASH_V124, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x5F, 0x56, 0x31, 0x32, 0x34}},
+		{FLASH_V125, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x5F, 0x56, 0x31, 0x32, 0x35}},
+		{FLASH_V126, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x5F, 0x56, 0x31, 0x32, 0x36}},
 
-		(FLASH512_V130, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x35) (0x31) (0x32) (0x5F) (0x56) (0x31) (0x33) (0x30).convert_to_container<std::vector<unsigned char>>())
-		(FLASH512_V131, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x35) (0x31) (0x32) (0x5F) (0x56) (0x31) (0x33) (0x31).convert_to_container<std::vector<unsigned char>>())
-		(FLASH512_V133, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x35) (0x31) (0x32) (0x5F) (0x56) (0x31) (0x33) (0x33).convert_to_container<std::vector<unsigned char>>())
+		{FLASH512_V130, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x35, 0x31, 0x32, 0x5F, 0x56, 0x31, 0x33, 0x30}},
+		{FLASH512_V131, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x35, 0x31, 0x32, 0x5F, 0x56, 0x31, 0x33, 0x31}},
+		{FLASH512_V133, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x35, 0x31, 0x32, 0x5F, 0x56, 0x31, 0x33, 0x33}},
 
-		(FLASH1M_V102, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x31) (0x4D) (0x5F) (0x56) (0x31) (0x30) (0x32).convert_to_container<std::vector<unsigned char>>())
-		(FLASH1M_V103, boost::assign::list_of(0x46) (0x4C) (0x41) (0x53) (0x48) (0x31) (0x4D) (0x5F) (0x56) (0x31) (0x30) (0x33).convert_to_container<std::vector<unsigned char>>())
+		{FLASH1M_V102, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x31, 0x4D, 0x5F, 0x56, 0x31, 0x30, 0x32}},
+		{FLASH1M_V103, {0x46, 0x4C, 0x41, 0x53, 0x48, 0x31, 0x4D, 0x5F, 0x56, 0x31, 0x30, 0x33}},
 
-		(EEPROM_V111, boost::assign::list_of(0x45) (0x45) (0x50) (0x52) (0x4F) (0x4D) (0x5F) (0x56) (0x31) (0x31) (0x31).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V120, boost::assign::list_of(0x45) (0x45) (0x50) (0x52) (0x4F) (0x4D) (0x5F) (0x56) (0x31) (0x32) (0x30).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V121, boost::assign::list_of(0x45) (0x45) (0x50) (0x52) (0x4F) (0x4D) (0x5F) (0x56) (0x31) (0x32) (0x31).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V122, boost::assign::list_of(0x45) (0x45) (0x50) (0x52) (0x4F) (0x4D) (0x5F) (0x56) (0x31) (0x32) (0x32).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V124, boost::assign::list_of(0x45) (0x45) (0x50) (0x52) (0x4F) (0x4D) (0x5F) (0x56) (0x31) (0x32) (0x34).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V126, boost::assign::list_of(0x45) (0x45) (0x50) (0x52) (0x4F) (0x4D) (0x5F) (0x56) (0x31) (0x32) (0x36).convert_to_container<std::vector<unsigned char>>())
+		{EEPROM_V111, {0x45, 0x45, 0x50, 0x52, 0x4F, 0x4D, 0x5F, 0x56, 0x31, 0x31, 0x31}},
+		{EEPROM_V120, {0x45, 0x45, 0x50, 0x52, 0x4F, 0x4D, 0x5F, 0x56, 0x31, 0x32, 0x30}},
+		{EEPROM_V121, {0x45, 0x45, 0x50, 0x52, 0x4F, 0x4D, 0x5F, 0x56, 0x31, 0x32, 0x31}},
+		{EEPROM_V122, {0x45, 0x45, 0x50, 0x52, 0x4F, 0x4D, 0x5F, 0x56, 0x31, 0x32, 0x32}},
+		{EEPROM_V124, {0x45, 0x45, 0x50, 0x52, 0x4F, 0x4D, 0x5F, 0x56, 0x31, 0x32, 0x34}},
+		{EEPROM_V126, {0x45, 0x45, 0x50, 0x52, 0x4F, 0x4D, 0x5F, 0x56, 0x31, 0x32, 0x36}},
 
 		// SRAM and FRAM don't require extra patching for flash cart saving (except for the EZ4 patch).
-		(SRAM_V110, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x56) (0x31) (0x31) (0x30).convert_to_container<std::vector<unsigned char>>())
-		(SRAM_V111, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x56) (0x31) (0x31) (0x31).convert_to_container<std::vector<unsigned char>>())
-		(SRAM_V112, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x56) (0x31) (0x31) (0x32).convert_to_container<std::vector<unsigned char>>())
-		(SRAM_V113, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x56) (0x31) (0x31) (0x33).convert_to_container<std::vector<unsigned char>>())
+		{SRAM_V110, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x56, 0x31, 0x31, 0x30}},
+		{SRAM_V111, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x56, 0x31, 0x31, 0x31}},
+		{SRAM_V112, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x56, 0x31, 0x31, 0x32}},
+		{SRAM_V113, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x56, 0x31, 0x31, 0x33}},
 
-		(FRAM_V100, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x46) (0x5F) (0x56) (0x31) (0x30) (0x30).convert_to_container<std::vector<unsigned char>>())
-		(FRAM_V102, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x46) (0x5F) (0x56) (0x31) (0x30) (0x32).convert_to_container<std::vector<unsigned char>>())
-		(FRAM_V103, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x46) (0x5F) (0x56) (0x31) (0x30) (0x33).convert_to_container<std::vector<unsigned char>>())
-		(FRAM_V110, boost::assign::list_of(0x53) (0x52) (0x41) (0x4D) (0x5F) (0x46) (0x5F) (0x56) (0x31) (0x31) (0x30).convert_to_container<std::vector<unsigned char>>())
+		{FRAM_V100, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x46, 0x5F, 0x56, 0x31, 0x30, 0x30}},
+		{FRAM_V102, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x46, 0x5F, 0x56, 0x31, 0x30, 0x32}},
+		{FRAM_V103, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x46, 0x5F, 0x56, 0x31, 0x30, 0x33}},
+		{FRAM_V110, {0x53, 0x52, 0x41, 0x4D, 0x5F, 0x46, 0x5F, 0x56, 0x31, 0x31, 0x30}},
 
-		(NO_SAVE, std::vector<unsigned char>());
+		{NO_SAVE, {}}
+	};
 
 
-	const std::map<SaveType, std::vector<unsigned char>> EZFLASH4_PATCHES = boost::assign::map_list_of
+	const std::map<SaveType, std::vector<unsigned char>> EZFLASH4_PATCHES = {
 		// EZ Flash 4 client adds data from 0xB5 to 0xBC.
 		// 0xB9 (inclusive) to 0xBC (inclusive) is used by the EZ4 to store the save data size.
 
 		// FLASH_V* are all 512 Kbit.
-		(FLASH_V120, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V121, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V123, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V124, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V125, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH_V126, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
+		{FLASH_V120, {0x10, 0x00, 0x13}},
+		{FLASH_V121, {0x10, 0x00, 0x13}},
+		{FLASH_V123, {0x10, 0x00, 0x13}},
+		{FLASH_V124, {0x10, 0x00, 0x13}},
+		{FLASH_V125, {0x10, 0x00, 0x13}},
+		{FLASH_V126, {0x10, 0x00, 0x13}},
 
 		// FLASH512_* are all 512 Kbit.
-		(FLASH512_V130, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH512_V131, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH512_V133, boost::assign::list_of(0x10) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
+		{FLASH512_V130, {0x10, 0x00, 0x13}},
+		{FLASH512_V131, {0x10, 0x00, 0x13}},
+		{FLASH512_V133, {0x10, 0x00, 0x13}},
 
 		// FLASH1M_* are all 1024Kbit.
-		(FLASH1M_V102, boost::assign::list_of(0x20) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
-		(FLASH1M_V103, boost::assign::list_of(0x20) (0x00) (0x13).convert_to_container<std::vector<unsigned char>>())
+		{FLASH1M_V102, {0x20, 0x00, 0x13}},
+		{FLASH1M_V103, {0x20, 0x00, 0x13}},
 
 		// EEPROM_V* are all 64Kbit.
-		(EEPROM_V111, boost::assign::list_of(0x02) (0x00) (0x12).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V120, boost::assign::list_of(0x02) (0x00) (0x12).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V121, boost::assign::list_of(0x02) (0x00) (0x12).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V122, boost::assign::list_of(0x02) (0x00) (0x12).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V124, boost::assign::list_of(0x02) (0x00) (0x12).convert_to_container<std::vector<unsigned char>>())
-		(EEPROM_V126, boost::assign::list_of(0x02) (0x00) (0x12).convert_to_container<std::vector<unsigned char>>())
+		{EEPROM_V111, {0x02, 0x00, 0x12}},
+		{EEPROM_V120, {0x02, 0x00, 0x12}},
+		{EEPROM_V121, {0x02, 0x00, 0x12}},
+		{EEPROM_V122, {0x02, 0x00, 0x12}},
+		{EEPROM_V124, {0x02, 0x00, 0x12}},
+		{EEPROM_V126, {0x02, 0x00, 0x12}},
 
 		// SRAM_* (including SRAM_F*) are all 256Kbit.
 		// SRAM and FRAM don't require extra patching for flash cart saving (except for the EZ4 patch).
-		(SRAM_V110, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
-		(SRAM_V111, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
-		(SRAM_V112, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
-		(SRAM_V113, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
+		{SRAM_V110, {0x08, 0x00, 0x11}},
+		{SRAM_V111, {0x08, 0x00, 0x11}},
+		{SRAM_V112, {0x08, 0x00, 0x11}},
+		{SRAM_V113, {0x08, 0x00, 0x11}},
 
-		(FRAM_V100, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
-		(FRAM_V102, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
-		(FRAM_V103, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
-		(FRAM_V110, boost::assign::list_of(0x08) (0x00) (0x11).convert_to_container<std::vector<unsigned char>>())
+		{FRAM_V100, {0x08, 0x00, 0x11}},
+		{FRAM_V102, {0x08, 0x00, 0x11}},
+		{FRAM_V103, {0x08, 0x00, 0x11}},
+		{FRAM_V110, {0x08, 0x00, 0x11}},
 
 		// No save is 0Kbit (obviously).
-		(NO_SAVE, boost::assign::list_of(0x08) (0x00) (0x10).convert_to_container<std::vector<unsigned char>>());
+		{NO_SAVE, {0x08, 0x00, 0x10}}
+	};
 
 
 	const unsigned char NINTENDO_LOGO_DATA[] = {

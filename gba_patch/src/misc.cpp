@@ -1,12 +1,7 @@
 #include <iostream>
 #include <vector>
-#if defined(__cpp_lib_filesystem)
 #include <filesystem>
 namespace fs = std::filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
 
 
 #include "misc.hpp"

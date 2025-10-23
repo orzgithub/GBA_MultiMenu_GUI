@@ -5,13 +5,8 @@
 #include <iterator>
 #include <limits>
 
-#if defined(__cpp_lib_filesystem)
 #include <filesystem>
 namespace fs = std::filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
 
 #include "data.hpp"
 #include "error.hpp"
@@ -34,11 +29,7 @@ void read_file(std::vector<unsigned char>& data, const std::string& file_path) {
 	std::streampos fsize;
 	size_t max_size = std::numeric_limits<size_t>::max();
 
-#if defined(__cpp_lib_filesystem)
 	fstrm.open(file_path_fs, std::ios::binary | std::ios::ate);
-#else
-    fstrm.open(file_path_fs.c_str(), std::ios::binary | std::ios::ate);
-#endif
 
 	if (fstrm.is_open()) {
 		fsize = fstrm.tellg();
