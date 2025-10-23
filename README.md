@@ -18,12 +18,11 @@ You need to have gcc or clang, cmake, devkitarm for gba, pybind11 and, of course
 On linux or some simular *nix platforms you can execute the following commands:
 
 ```shell
-export DEVKITPRO=<PATH_TO_DEVKITPRO>
-export DEVKITARM=<PATH_TO_DEVKITARM>
 cd batteryless_patch
 cmake .
+# export DEVKITPRO=<PATH_TO_DEVKITPRO> DEVKITARM=<PATH_TO_DEVKITARM>
 # make payload
-# The source code has a pre-built payload_bin.hpp so no need to build it again. Uncommitt it if you wish to build it on your own.
+## The source code has a pre-built payload_bin.hpp so no need to build it again. Uncommitt it if you wish to build it on your own.
 make
 cp batteryless_patch$(python3-config --extension-suffix) ../lib
 cd ..
