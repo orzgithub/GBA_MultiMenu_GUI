@@ -528,7 +528,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         ## background image view
         global image_lk_bg
         global bg_path
-        image_lk_bg = ImageTk.PhotoImage(file=r"bg.png")
+        image_lk_bg = ImageTk.PhotoImage(data=base64.b64decode(Resource.default_bg))
         label_image_lk_bg = tkinter.ttk.Label(frame_rom_gen, image=image_lk_bg)
         label_image_lk_bg.pack(padx=5, pady=5)
         ## bottom for select the background image
