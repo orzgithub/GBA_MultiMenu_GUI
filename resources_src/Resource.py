@@ -24,3 +24,7 @@ if __name__ == "__main__":
 
     with open("Resource.py", "wb") as selffile:
         selffile.write(new_res.encode("utf-8"))
+
+def release_img():
+    open("../bg.png", "wb").write(base64.b64decode(default_bg))
+    open("../icon.ico", "wb").write(base64.b64decode(icon))
