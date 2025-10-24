@@ -112,6 +112,12 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
             window_edit_rom = tkinter.Toplevel(self)
             window_edit_rom.title(title)
             window_edit_rom.resizable(False, False)
+
+            def window_edit_rom_self_destory():
+                window_edit_rom.quit()
+                window_edit_rom.destroy()
+
+            window_edit_rom.protocol("WM_DELETE_WINDOW", window_edit_rom_self_destory)
             frame_edit_rom = tkinter.ttk.Frame(window_edit_rom)
             frame_edit_rom.pack(padx=10, pady=10)
             label_gba_path = tkinter.ttk.Label(
@@ -178,8 +184,10 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                     else rom_config["save_slot"]
                 )
 
-            def ret_handler_args():
-                ret_handler(
+            button_done = tkinter.ttk.Button(
+                frame_edit_rom,
+                text=app_lang.button_done,
+                command=lambda: ret_handler(
                     window_edit_rom,
                     GbaStruct(
                         path=entry_gba_path.get(),
@@ -190,10 +198,7 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                             else int(entry_save_slot.get())
                         ),
                     ),
-                )
-
-            button_done = tkinter.ttk.Button(
-                frame_edit_rom, text=app_lang.button_done, command=ret_handler_args
+                ),
             )
             button_done.grid(row=3, column=1)
             window_edit_rom.mainloop()
@@ -204,7 +209,12 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                 window_handler.quit()
                 window_handler.destroy()
 
-            impl_window_edit_rom(finish_add_rom, app_lang.window_title_add_rom, None)
+            self.after(
+                0,
+                lambda: impl_window_edit_rom(
+                    finish_add_rom, app_lang.window_title_add_rom, None
+                ),
+            )
 
         # Menu part
         menu = tkinter.Menu(self)
@@ -336,14 +346,19 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                     window_handler.destroy()
 
                 edit_item_value = table_game_list.item(edit_item)["values"]
-                impl_window_edit_rom(
-                    finish_edit_rom,
-                    app_lang.window_title_edit_rom,
-                    GbaStruct(
-                        name=edit_item_value[0],
-                        path=edit_item_value[1],
-                        save_slot=(
-                            "None" if edit_item_value[2] is None else edit_item_value[2]
+                self.after(
+                    0,
+                    lambda: impl_window_edit_rom(
+                        finish_edit_rom,
+                        app_lang.window_title_edit_rom,
+                        GbaStruct(
+                            name=edit_item_value[0],
+                            path=edit_item_value[1],
+                            save_slot=(
+                                "None"
+                                if edit_item_value[2] is None
+                                else edit_item_value[2]
+                            ),
                         ),
                     ),
                 )
@@ -359,15 +374,18 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 window_handler.destroy()
 
             if os.path.splitext(path)[1] in [".gba", ".gbc", ".gb", ".nes"]:
-                impl_window_edit_rom(
-                    finish_add_rom,
-                    app_lang.window_title_add_rom,
-                    GbaStruct(
-                        name=os.path.splitext(os.path.basename(path))[0],
-                        path=path,
-                        save_slot=max_slot,
+                self.after(
+                    0,
+                    lambda: impl_window_edit_rom(
+                        finish_add_rom,
+                        app_lang.window_title_add_rom,
+                        GbaStruct(
+                            name=os.path.splitext(os.path.basename(path))[0],
+                            path=path,
+                            save_slot=max_slot,
+                        ),
                     ),
-                )
+                )  # call new window by the ui so won't block the copy OLE process.
 
         table_game_list.drop_target_register(tkinterdnd2.DND_FILES)
         table_game_list.dnd_bind("<<Drop>>", table_game_list_dnd_add)
