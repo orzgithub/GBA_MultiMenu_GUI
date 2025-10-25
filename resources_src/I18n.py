@@ -64,6 +64,7 @@ class lang_base(ABC):
     info_build_done: str
     info_build_done_with_error: str
     error_image_size_not_allowed: str
+    error_add_rom_before_generate: str
 
 
 class zh_CN(lang_base):
@@ -129,6 +130,7 @@ class zh_CN(lang_base):
         "点击确定以打开日志文件"
     )
     error_image_size_not_allowed: str = "图片尺寸不符，无法作为菜单背景。 \n" "请选择一个240*160的png图片。"
+    error_add_rom_before_generate: str = "请在生成之前添加至少一个ROM"
 
 
 class en_US(lang_base):
@@ -198,3 +200,4 @@ class en_US(lang_base):
     error_image_size_not_allowed: str = (
         "Size of the image is wrong. \n" "Please use a 240*160 pixel image."
     )
+    error_add_rom_before_generate: str = "Please add at least one ROM before building."

@@ -575,6 +575,11 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         ## button for build the rom
         def start_build():
             game_list_children = table_game_list.get_children()
+            if not game_list_children:
+                tkinter.messagebox.showinfo(
+                    message=app_lang.error_add_rom_before_generate
+                )
+                return
             game_list = list()
             for child in game_list_children:
                 save_slot = table_game_list.item(child)["values"][2]
