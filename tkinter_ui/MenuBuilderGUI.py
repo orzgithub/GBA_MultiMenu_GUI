@@ -40,9 +40,9 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
         default_theme = tkinter.ttk.Style(master=self).theme_use()
 
         def set_theme(theme: str):
-            config.set_theme(theme)
+            config.set_tk_theme(theme)
             match theme:
-                case "auto":
+                case "sv_ttk::auto":
                     dark_mode = False
                     match platform.system():
                         case "darwin":
@@ -71,14 +71,14 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                         sv_ttk.set_theme("dark", self)
                     else:
                         sv_ttk.set_theme("light", self)
-                case "light":
+                case "sv_ttk::light":
                     sv_ttk.set_theme("light", self)
-                case "dark":
+                case "sv_ttk::dark":
                     sv_ttk.set_theme("dark", self)
                 case "classic":
                     tkinter.ttk.Style(master=self).theme_use(default_theme)
 
-        set_theme(config.theme)
+        set_theme(config.tk_theme)
 
         app_icon_data = base64.b64decode(Resource.icon)
         app_icon = ImageTk.PhotoImage(data=app_icon_data)
@@ -220,16 +220,15 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
         menu.add_command(label=app_lang.menu_add_game, command=show_window_add_rom)
         ## Language Menu
         menu_lang = tkinter.Menu(menu, tearoff=False)
-        for lang in I18n.lang_dict.keys():
-            # Yes these are really strange but using lambda to pass args are causing problems here.
-            # If you have a better idea please submit a pull request for this.
-            exec(
-                f"""
-def set_lang_{lang}():
-    config.set_lang('{lang}')
-    tkinter.messagebox.showinfo(message=I18n.{lang}.info_change_lang)
-menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
-"""
+        for lang, lang_name in I18n.lang_dict.items():
+            menu_lang.add_command(
+                label=lang_name,
+                command=lambda l=lang: (
+                    config.set_lang(l),
+                    tkinter.messagebox.showinfo(
+                        message=eval(f"I18n.{l}.info_change_lang")
+                    ),
+                ),
             )
         menu.add_cascade(label=app_lang.menu_lang_set, menu=menu_lang)
 
@@ -269,30 +268,32 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
         menu.add_command(label=app_lang.menu_about, command=show_window_about)
         ##Theme
         menu_theme = tkinter.Menu(menu, tearoff=False)
-        menu_theme_system = tkinter.Menu(menu, tearoff=False)
-        menu_theme_system.add_command(
-            label=app_lang.menu_theme_dict["classic"],
-            command=lambda: set_theme("classic"),
-        )
-        menu_theme.add_cascade(
-            label=app_lang.menu_theme_type_dict["system"], menu=menu_theme_system
-        )
-        menu_theme_sv = tkinter.Menu(menu, tearoff=False)
-        menu_theme_sv.add_command(
-            label=app_lang.menu_theme_dict["auto"],
-            command=lambda: set_theme("auto"),
-        )
-        menu_theme_sv.add_command(
-            label=app_lang.menu_theme_dict["light"],
-            command=lambda: set_theme("light"),
-        )
-        menu_theme_sv.add_command(
-            label=app_lang.menu_theme_dict["dark"],
-            command=lambda: set_theme("dark"),
-        )
-        menu_theme.add_cascade(
-            label=app_lang.menu_theme_type_dict["sun_valley"], menu=menu_theme_sv
-        )
+
+        menu_theme_dict = {}
+
+        for theme_type, theme_type_name in app_lang.menu_tk_theme_type_dict.items():
+            menu_theme_dict[f"menu_theme_{theme_type}"] = tkinter.Menu(
+                menu, tearoff=False
+            )
+            menu_theme.add_cascade(
+                label=theme_type_name, menu=menu_theme_dict[f"menu_theme_{theme_type}"]
+            )
+
+        for (
+            theme_elem_type,
+            theme_elem_type_name,
+        ) in app_lang.menu_tk_theme_dict.items():
+            if (
+                f"menu_theme_{theme_elem_type.split("::")[0] if "::" in theme_elem_type else "system"}"
+                in menu_theme_dict
+            ):
+                menu_theme_dict[
+                    f"menu_theme_{theme_elem_type.split("::")[0] if "::" in theme_elem_type else "system"}"
+                ].add_command(
+                    label=theme_elem_type_name,
+                    command=lambda t=theme_elem_type: set_theme(t),
+                )
+
         menu.add_cascade(label=app_lang.menu_theme, menu=menu_theme)
         ## Exit
         menu.add_command(label=app_lang.menu_exit, command=self.quit)

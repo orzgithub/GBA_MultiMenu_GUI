@@ -6,12 +6,12 @@ from .I18n import lang_dict
 
 class Config(object):
     lang: str = "en_US"
-    theme: str = "classic"
+    tk_theme: str = "classic"
 
     def __init__(self) -> None:
         valid_config: dict = {
             "lang": lang_dict.keys(),
-            "theme": ["classic", "auto", "light", "dark"],
+            "tk_theme": ["classic", "sv_ttk::auto", "sv_ttk::light", "sv_ttk::dark"],
         }
         if os.path.isfile("config.json"):
             with open("config.json") as config_file:
@@ -23,10 +23,10 @@ class Config(object):
                     ):
                         self.lang = config_json["lang"]
                     if (
-                        "theme" in config_json
-                        and config_json["theme"] in valid_config["theme"]
+                        "tk_theme" in config_json
+                        and config_json["tk_theme"] in valid_config["tk_theme"]
                     ):
-                        self.theme = config_json["theme"]
+                        self.tk_theme = config_json["tk_theme"]
                 except json.decoder.JSONDecodeError as e:
                     warnings.warn(
                         "config.json is not a valid json", category=ResourceWarning
@@ -35,13 +35,13 @@ class Config(object):
 
     def save(self) -> None:
         with open("config.json", "w") as config_file:
-            config_dict: dict = {"lang": self.lang, "theme": self.theme}
+            config_dict: dict = {"lang": self.lang, "theme": self.tk_theme}
             json.dump(config_dict, config_file)
 
     def set_lang(self, langset: str) -> None:
         self.lang: str = langset
         self.save()
 
-    def set_theme(self, themeset: str) -> None:
-        self.theme: str = themeset
+    def set_tk_theme(self, themeset: str) -> None:
+        self.tk_theme: str = themeset
         self.save()

@@ -17,19 +17,20 @@ class lang_base(ABC):
     window_title: str
     window_title_add_rom: str
     window_title_edit_rom: str
+    window_title_building: str
     menu_add_game: str
     menu_lang_set: str
     menu_about: str
     menu_theme: str
-    menu_theme_type_dict: dict[str, str] = {
+    menu_tk_theme_type_dict: dict[str, str] = {
         "system": "",
-        "sun_valley": "",
+        "sv_ttk": "",
     }
-    menu_theme_dict: dict[str, str] = {
+    menu_tk_theme_dict: dict[str, str] = {
         "classic": "",
-        "auto": "",
-        "light": "",
-        "dark": "",
+        "sv_ttk::auto": "",
+        "sv_ttk::light": "",
+        "sv_ttk::dark": "",
     }
     menu_exit: str
     text_lk_bg: str
@@ -61,6 +62,7 @@ class lang_base(ABC):
     button_add_rom: str
     button_delete: str
     info_change_lang: str
+    info_building: str
     info_build_done: str
     info_build_done_with_error: str
     error_image_size_not_allowed: str
@@ -75,19 +77,20 @@ class zh_CN(lang_base):
     window_title: str = "LK合卡菜单制作GUI"
     window_title_add_rom: str = "添加ROM"
     window_title_edit_rom: str = "编辑ROM"
+    window_title_building: str = "生成中"
     menu_add_game: str = "添加"
     menu_lang_set: str = "语言"
     menu_about: str = "关于"
     menu_theme: str = "主题"
-    menu_theme_type_dict: dict[str, str] = {
+    menu_tk_theme_type_dict: dict[str, str] = {
         "system": "系统样式",
-        "sun_valley": "Windows11样式",
+        "sv_ttk": "Windows11样式",
     }
-    menu_theme_dict: dict[str, str] = {
+    menu_tk_theme_dict: dict[str, str] = {
         "classic": "经典",
-        "auto": "自动",
-        "light": "亮色",
-        "dark": "暗色",
+        "sv_ttk::auto": "自动",
+        "sv_ttk::light": "亮色",
+        "sv_ttk::dark": "暗色",
     }
     menu_exit: str = "退出"
     text_lk_bg: str = "菜单背景"
@@ -120,6 +123,7 @@ class zh_CN(lang_base):
     button_add_rom: str = "选择ROM"
     button_delete: str = "删除"
     info_change_lang: str = "语言已改变，重启应用生效。"
+    info_building: str = "生成ROM中，请稍等。"
     info_build_done: str = "生成完成"
     info_build_done_with_error: str = (
         "生成完成，但有错误发生\n"
@@ -141,19 +145,20 @@ class en_US(lang_base):
     window_title: str = "LK multirom menu builder GUI"
     window_title_add_rom: str = "Add a ROM"
     window_title_edit_rom: str = "Edit a ROM"
+    window_title_building: str = "Building"
     menu_add_game: str = "Add"
     menu_lang_set: str = "Language"
     menu_about: str = "About"
     menu_theme: str = "Theme"
-    menu_theme_type_dict: dict[str, str] = {
+    menu_tk_theme_type_dict: dict[str, str] = {
         "system": "System style",
-        "sun_valley": "Windows11 style",
+        "sv_ttk": "Windows11 style",
     }
-    menu_theme_dict: dict[str, str] = {
+    menu_tk_theme_dict: dict[str, str] = {
         "classic": "Classic",
-        "auto": "Auto",
-        "light": "Light",
-        "dark": "Dark",
+        "sv_ttk::auto": "Auto",
+        "sv_ttk::light": "Light",
+        "sv_ttk::dark": "Dark",
     }
     menu_exit: str = "Exit"
     text_lk_bg: str = "Menu Background"
@@ -188,6 +193,7 @@ class en_US(lang_base):
     info_change_lang: str = (
         "Language is changed. Restart the application to take effect."
     )
+    info_building: str = "Building ROM. Please wait."
     info_build_done: str = "Generate finished"
     info_build_done_with_error: str = (
         "Generated finished with error\n"
