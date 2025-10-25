@@ -47,9 +47,7 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                     match platform.system():
                         case "darwin":
                             try:
-                                from subprocess import check_output
-
-                                dark_mode = check_output(
+                                dark_mode = subprocess.check_output(
                                     "defaults read -g AppleInterfaceStyle", shell=True
                                 )
                             except:
