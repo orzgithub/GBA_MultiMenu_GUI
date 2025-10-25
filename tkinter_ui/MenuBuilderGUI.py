@@ -139,7 +139,7 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                     entry_gba_path.delete(0, tkinter.END)
                     entry_gba_path.insert(0, selected_file_path)
                     if not entry_gba_name.get() and (
-                        os.path.splitext(selected_file_path)[1]
+                        os.path.splitext(selected_file_path)[1].lower()
                         in [".gba", ".gbc", ".gb", ".nes"]
                     ):
                         """entry_gba_name.insert(
@@ -371,7 +371,7 @@ menu_lang.add_command(label=I18n.lang_dict['{lang}'], command=set_lang_{lang})
                 window_handler.quit()
                 window_handler.destroy()
 
-            if os.path.splitext(path)[1] in [".gba", ".gbc", ".gb", ".nes"]:
+            if os.path.splitext(path)[1].lower() in [".gba", ".gbc", ".gb", ".nes"]:
                 self.after(
                     0,
                     lambda: impl_window_edit_rom(
