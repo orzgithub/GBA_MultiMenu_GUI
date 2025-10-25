@@ -9,7 +9,7 @@ else:
     from .cartridge_config import cartridge_types
 
 # Configuration
-app_version = "1.1"
+app_version = "1.2"
 
 ################################
 
@@ -234,48 +234,39 @@ def build(args_set: dict = None) -> FuncModeRet | int:
     UpdateSectorMap(start=item_list_offset, length=1, c="l")
     status_offset = item_list_offset + 1
     UpdateSectorMap(start=status_offset, length=1, c="c")
+    status = bytearray(
+        [
+            0x4B,
+            0x55,
+            0x4D,
+            0x41,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+        ]
+    )
+    """
+    status:
+    [0:4]: b"KUMA"
+    [4]: version code, currently unused
+    [5]: battery present, 0 for not present and 1 (or other) for present
+    [6:8]: last boot menu index, which store the game last booted
+    [9]: last boot save index, which store the save last used
+    [10]: last boot save type, which store the save type last used, currently if the battery present and use a save slot it's always SRAM_512K so don't use it to check if it's SRAM_1M or not
+    [11]: sram bank type, which store the sram bank type
+    [12:]: not used
+    """
     if battery_present:
-        status = bytearray(
-            [
-                0x4B,
-                0x55,
-                0x4D,
-                0x41,
-                0x00,
-                0x01,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-            ]
-        )
-    else:
-        status = bytearray(
-            [
-                0x4B,
-                0x55,
-                0x4D,
-                0x41,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-                0x00,
-            ]
-        )
+        status[5] = 0x01
     compilation[
         status_offset * sector_size : status_offset * sector_size + len(status)
     ] = status
