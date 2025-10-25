@@ -1,7 +1,9 @@
 import json
 import os
 import warnings
-from .I18n import lang_dict
+from .I18n import lang_dict, lang_base
+
+dummy_lang = lang_base()
 
 
 class Config(object):
@@ -11,7 +13,7 @@ class Config(object):
     def __init__(self) -> None:
         valid_config: dict = {
             "lang": lang_dict.keys(),
-            "tk_theme": ["classic", "sv_ttk::auto", "sv_ttk::light", "sv_ttk::dark"],
+            "tk_theme": dummy_lang.menu_tk_theme_dict.keys(),
         }
         if os.path.isfile("config.json"):
             with open("config.json") as config_file:
@@ -35,7 +37,7 @@ class Config(object):
 
     def save(self) -> None:
         with open("config.json", "w") as config_file:
-            config_dict: dict = {"lang": self.lang, "theme": self.tk_theme}
+            config_dict: dict = {"lang": self.lang, "tk_theme": self.tk_theme}
             json.dump(config_dict, config_file)
 
     def set_lang(self, langset: str) -> None:
@@ -44,4 +46,8 @@ class Config(object):
 
     def set_tk_theme(self, themeset: str) -> None:
         self.tk_theme: str = themeset
+        self.save()
+
+    def set_qt_theme(self, themeset: str) -> None:
+        self.qt_theme: str = themeset
         self.save()
