@@ -32,6 +32,13 @@ class lang_base(ABC):
         "sv_ttk::light": "",
         "sv_ttk::dark": "",
     }
+    menu_qt_theme_type_dict: dict[str, str] = {
+        "system": "",
+    }
+    menu_qt_theme_dict: dict[str, str] = {
+        "Fusion": "",
+        "Windows": "",
+    }
     menu_exit: str
     text_lk_bg: str
     text_gba_path: str
@@ -91,6 +98,13 @@ class zh_CN(lang_base):
         "sv_ttk::auto": "自动",
         "sv_ttk::light": "亮色",
         "sv_ttk::dark": "暗色",
+    }
+    menu_qt_theme_type_dict: dict[str, str] = {
+        "system": "系统样式",
+    }
+    menu_qt_theme_dict: dict[str, str] = {
+        "Fusion": "融合",
+        "Windows": "Windows经典",
     }
     menu_exit: str = "退出"
     text_lk_bg: str = "菜单背景"
@@ -159,6 +173,13 @@ class en_US(lang_base):
         "sv_ttk::auto": "Auto",
         "sv_ttk::light": "Light",
         "sv_ttk::dark": "Dark",
+    }
+    menu_qt_theme_type_dict: dict[str, str] = {
+        "system": "System style",
+    }
+    menu_qt_theme_dict: dict[str, str] = {
+        "Fusion": "Fusion",
+        "Windows": "Windows classic",
     }
     menu_exit: str = "Exit"
     text_lk_bg: str = "Menu Background"
