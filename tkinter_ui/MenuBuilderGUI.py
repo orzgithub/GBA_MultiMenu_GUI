@@ -439,11 +439,73 @@ class MenuBuilderGUI(tkinterdnd2.TkinterDnD.Tk):
                 + 1
             )
 
+        def move_up():
+            selection = table_game_list.selection()
+            if not selection:
+                return
+            item = selection[0]
+            children = table_game_list.get_children()
+            idx = children.index(item)
+            if idx > 0:
+                table_game_list.move(item, '', idx - 1)
+                table_game_list.selection_set(item)
+                update_button_states()
+
+        def move_down():
+            selection = table_game_list.selection()
+            if not selection:
+                return
+            item = selection[0]
+            children = table_game_list.get_children()
+            idx = children.index(item)
+            if idx < len(children) - 1:
+                table_game_list.move(item, '', idx + 1)
+                table_game_list.selection_set(item)
+                update_button_states()
+
+        def update_button_states(event=None):
+            selection = table_game_list.selection()
+            if not selection:
+                button_game_delete.config(state=tkinter.DISABLED)
+                button_move_up.config(state=tkinter.DISABLED)
+                button_move_down.config(state=tkinter.DISABLED)
+            else:
+                button_game_delete.config(state=tkinter.NORMAL)
+                children = table_game_list.get_children()
+                idx = children.index(selection[0])
+
+                if idx == 0:
+                    button_move_up.config(state=tkinter.DISABLED)
+                else:
+                    button_move_up.config(state=tkinter.NORMAL)
+
+                if idx == len(children) - 1:
+                    button_move_down.config(state=tkinter.DISABLED)
+                else:
+                    button_move_down.config(state=tkinter.NORMAL)
+
+        table_game_list.bind('<<TreeviewSelect>>', update_button_states)
+
+        frame_game_buttons = tkinter.ttk.Frame(frame_game_mgr)
+
         button_game_delete = tkinter.ttk.Button(
-            frame_game_mgr, text=app_lang.button_delete, command=delete_game
+            frame_game_buttons, text=app_lang.button_delete, command=delete_game
         )
-        button_game_delete.pack(padx=5, pady=5)
+        button_game_delete.pack(side=tkinter.LEFT, padx=5, pady=5)
+
+        button_move_up = tkinter.ttk.Button(
+            frame_game_buttons, text=app_lang.button_move_up, command=move_up
+        )
+        button_move_up.pack(side=tkinter.LEFT, padx=5, pady=5)
+
+        button_move_down = tkinter.ttk.Button(
+            frame_game_buttons, text=app_lang.button_move_down, command=move_down
+        )
+        button_move_down.pack(side=tkinter.LEFT, padx=5, pady=5)
+
+        frame_game_buttons.pack(padx=5, pady=5)
         frame_game_mgr.grid(row=0, column=0, padx=10, pady=10)
+        update_button_states()
 
         # Rom Generate Part
         frame_rom_gen = tkinter.ttk.LabelFrame(

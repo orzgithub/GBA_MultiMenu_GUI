@@ -68,6 +68,8 @@ class lang_base(ABC):
     button_lk_set_bg: str
     button_add_rom: str
     button_delete: str
+    button_move_up: str
+    button_move_down: str
     info_change_lang: str
     info_building: str
     info_build_done: str
@@ -136,6 +138,8 @@ class zh_CN(lang_base):
     button_lk_set_bg: str = "选择背景"
     button_add_rom: str = "选择ROM"
     button_delete: str = "删除"
+    button_move_up: str = "上移"
+    button_move_down: str = "下移"
     info_change_lang: str = "语言已改变，重启应用生效。"
     info_building: str = "生成ROM中，请稍等。"
     info_build_done: str = "生成完成"
@@ -211,6 +215,8 @@ class en_US(lang_base):
     button_lk_set_bg: str = "Select the background"
     button_add_rom: str = "Select the ROM"
     button_delete: str = "Delete"
+    button_move_up: str = "Move up"
+    button_move_down: str = "Move down"
     info_change_lang: str = (
         "Language is changed. Restart the application to take effect."
     )

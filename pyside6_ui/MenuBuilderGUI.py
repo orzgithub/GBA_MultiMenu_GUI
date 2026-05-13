@@ -463,12 +463,26 @@ class MenuBuilderGUI(QMainWindow):
 
         frame_layout.addWidget(self.table_game_list)
 
-        # Delete button
+        # Button bar: Delete, Move Up, Move Down
+        rom_action_button_layout = QHBoxLayout()
         self.button_game_delete = QPushButton(self.app_lang.button_delete)
         self.button_game_delete.clicked.connect(self.delete_game)
-        frame_layout.addWidget(self.button_game_delete)
+        rom_action_button_layout.addWidget(self.button_game_delete)
+
+        self.button_move_up = QPushButton(self.app_lang.button_move_up)
+        self.button_move_up.clicked.connect(self.move_up)
+        rom_action_button_layout.addWidget(self.button_move_up)
+
+        self.button_move_down = QPushButton(self.app_lang.button_move_down)
+        self.button_move_down.clicked.connect(self.move_down)
+        rom_action_button_layout.addWidget(self.button_move_down)
+
+        frame_layout.addLayout(rom_action_button_layout)
 
         parent_layout.addWidget(frame_game_mgr)
+
+        self.table_game_list.itemSelectionChanged.connect(self.update_button_states)
+        self.update_button_states()
 
     def create_rom_generation_section(self, parent_layout):
         frame_rom_gen = QGroupBox(self.app_lang.frame_rom_gen)
@@ -605,6 +619,49 @@ class MenuBuilderGUI(QMainWindow):
         if dialog.exec() == QDialog.Accepted:
             self.edit_game(dialog.get_rom_info(), item)
 
+    def move_up(self):
+        selected = self.table_game_list.selectedItems()
+        if len(selected) != 1:
+            return
+        item = selected[0]
+        idx = self.table_game_list.indexOfTopLevelItem(item)
+        if idx <= 0:
+            return
+
+        self.table_game_list.takeTopLevelItem(idx)
+        self.table_game_list.insertTopLevelItem(idx - 1, item)
+        self.table_game_list.setCurrentItem(item)
+        self.update_button_states()
+
+    def move_down(self):
+        selected = self.table_game_list.selectedItems()
+        if len(selected) != 1:
+            return
+        item = selected[0]
+        idx = self.table_game_list.indexOfTopLevelItem(item)
+        count = self.table_game_list.topLevelItemCount()
+        if idx < 0 or idx >= count - 1:
+            return
+
+        self.table_game_list.takeTopLevelItem(idx)
+        self.table_game_list.insertTopLevelItem(idx + 1, item)
+        self.table_game_list.setCurrentItem(item)
+        self.update_button_states()
+
+    def update_button_states(self):
+        selected = self.table_game_list.selectedItems()
+        self.button_game_delete.setEnabled(len(selected) > 0)
+
+        if len(selected) == 1:
+            item = selected[0]
+            idx = self.table_game_list.indexOfTopLevelItem(item)
+            count = self.table_game_list.topLevelItemCount()
+            self.button_move_up.setEnabled(idx > 0)
+            self.button_move_down.setEnabled(idx < count - 1)
+        else:
+            self.button_move_up.setEnabled(False)
+            self.button_move_down.setEnabled(False)
+
     def delete_game(self):
         global max_slot
         selected_items = self.table_game_list.selectedItems()
@@ -621,6 +678,8 @@ class MenuBuilderGUI(QMainWindow):
                     max_save_slot = max(max_save_slot, int(save_slot_text))
 
             max_slot = max_save_slot + 1
+
+        self.update_button_states()
 
     def add_game(self, game_info: GbaStruct):
         global max_slot
